@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2014 - 2015  SEGGER Microcontroller GmbH & Co. KG        *
+*       (c) 2014 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -50,6 +50,16 @@ Additional information:
           RTT channel 0 is always present and reserved for Terminal usage.
           Name is fixed to "Terminal"
 
+          Effective buffer size: SizeOfBuffer - 1
+
+          WrOff == RdOff:       Buffer is empty
+          WrOff == (RdOff - 1): Buffer is full
+          WrOff >  RdOff:       Free space includes wrap-around
+          WrOff <  RdOff:       Used space includes wrap-around
+          (WrOff == (SizeOfBuffer - 1)) && (RdOff == 0):  
+                                Buffer full and wrap-around after next byte
+
+
 ----------------------------------------------------------------------
 */
 
@@ -78,6 +88,12 @@ Additional information:
 
 #ifndef   SEGGER_RTT_MAX_NUM_DOWN_BUFFERS
   #define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS                  2    // Number of down-buffers (H->T) available on this target
+#endif
+
+#ifndef SEGGER_RTT_BUFFER_SECTION
+  #if defined SEGGER_RTT_SECTION
+    #define SEGGER_RTT_BUFFER_SECTION SEGGER_RTT_SECTION
+  #endif
 #endif
 
 #ifndef   SEGGER_RTT_MODE_DEFAULT
@@ -130,14 +146,43 @@ static unsigned char _aTerminalId[16] = { '0', '1', '2', '3', '4', '5', '6', '7'
 **********************************************************************
 */
 //
-// Allocate buffers for channel 0
+// RTT Control Block and allocate buffers for channel 0
 //
-static char _acUpBuffer  [BUFFER_SIZE_UP];
-static char _acDownBuffer[BUFFER_SIZE_DOWN];
-//
-// Initialize SEGGER Real-time-Terminal control block (CB)
-//
-SEGGER_RTT_CB _SEGGER_RTT;
+#ifdef SEGGER_RTT_SECTION
+  #if (defined __GNUC__)
+    __attribute__ ((section (SEGGER_RTT_SECTION))) SEGGER_RTT_CB _SEGGER_RTT;
+  #elif (defined __ICCARM__) || (defined __ICCRX__)
+    #pragma location=SEGGER_RTT_SECTION
+    SEGGER_RTT_CB _SEGGER_RTT;
+  #elif (defined __CC_ARM__)
+    __attribute__ ((section (SEGGER_RTT_SECTION), zero_init)) SEGGER_RTT_CB _SEGGER_RTT;
+  #else
+    SEGGER_RTT_CB _SEGGER_RTT;
+  #endif
+#else
+    SEGGER_RTT_CB _SEGGER_RTT;
+#endif
+
+#ifdef SEGGER_RTT_BUFFER_SECTION
+  #if (defined __GNUC__)
+    __attribute__ ((section (SEGGER_RTT_BUFFER_SECTION))) static char _acUpBuffer  [BUFFER_SIZE_UP];
+    __attribute__ ((section (SEGGER_RTT_BUFFER_SECTION))) static char _acDownBuffer[BUFFER_SIZE_DOWN];
+  #elif (defined __ICCARM__) || (defined __ICCRX__)
+    #pragma location=SEGGER_RTT_BUFFER_SECTION
+    static char _acUpBuffer  [BUFFER_SIZE_UP];
+    #pragma location=SEGGER_RTT_BUFFER_SECTION
+    static char _acDownBuffer[BUFFER_SIZE_DOWN];
+  #elif (defined __CC_ARM__)
+    __attribute__ ((section (SEGGER_RTT_BUFFER_SECTION), zero_init)) static char _acUpBuffer  [BUFFER_SIZE_UP];
+    __attribute__ ((section (SEGGER_RTT_BUFFER_SECTION), zero_init)) static char _acDownBuffer[BUFFER_SIZE_DOWN];
+  #else
+    static char _acUpBuffer  [BUFFER_SIZE_UP];
+    static char _acDownBuffer[BUFFER_SIZE_DOWN];
+  #endif
+#else
+    static char _acUpBuffer  [BUFFER_SIZE_UP];
+    static char _acDownBuffer[BUFFER_SIZE_DOWN];
+#endif
 
 static char _ActiveTerminal;
 
@@ -448,6 +493,89 @@ unsigned SEGGER_RTT_Read(unsigned BufferIndex, void* pBuffer, unsigned BufferSiz
   SEGGER_RTT_UNLOCK();
   //
   return NumBytesRead;
+}
+
+/*********************************************************************
+*
+*       SEGGER_RTT_WriteWithOverwriteNoLock
+*
+*  Function description
+*    Stores a specified number of characters in SEGGER RTT
+*    control block.
+*    SEGGER_RTT_WriteWithOverwriteNoLock does not lock the application 
+*    and overwrites data if the data does not fit into the buffer.
+*
+*  Parameters
+*    BufferIndex  Index of "Up"-buffer to be used (e.g. 0 for "Terminal").
+*    pBuffer      Pointer to character array. Does not need to point to a \0 terminated string.
+*    NumBytes     Number of bytes to be stored in the SEGGER RTT control block.
+*
+*  Notes
+*    (1) If there is not enough space in the "Up"-buffer, data is overwritten.
+*    (2) For performance reasons this function does not call Init()
+*        and may only be called after RTT has been initialized.
+*        Either by calling SEGGER_RTT_Init() or calling another RTT API function first.
+*    (3) Do not use SEGGER_RTT_WriteWithOverwriteNoLock if a J-Link 
+*        connection reads RTT data.
+*/
+void SEGGER_RTT_WriteWithOverwriteNoLock(unsigned BufferIndex, const void* pBuffer, unsigned NumBytes) {
+  const char*           pData;
+  SEGGER_RTT_BUFFER_UP* pRing;
+  unsigned              Avail;
+
+  pData = (const char *)pBuffer;
+  //
+  // Get "to-host" ring buffer and copy some elements into local variables.
+  //
+  pRing = &_SEGGER_RTT.aUp[BufferIndex];
+  //
+  // Check if we will overwrite data and need to adjust the RdOff.
+  //
+  if (pRing->WrOff == pRing->RdOff) {
+    Avail = pRing->SizeOfBuffer - 1u;
+  } else if ( pRing->WrOff < pRing->RdOff) {
+    Avail = pRing->RdOff - pRing->WrOff - 1u;
+  } else {
+    Avail = pRing->RdOff - pRing->WrOff - 1u + pRing->SizeOfBuffer;
+  }
+  if (NumBytes > Avail) {
+    pRing->RdOff += (NumBytes - Avail);
+    while (pRing->RdOff >= pRing->SizeOfBuffer) {
+      pRing->RdOff -= pRing->SizeOfBuffer;
+    }
+  }
+  //
+  // Write all data, no need to check the RdOff, but possibly handle multiple wrap-arounds
+  //
+  Avail = pRing->SizeOfBuffer - pRing->WrOff;
+  do {
+    if (Avail > NumBytes) {
+      //
+      // Last round
+      //
+#if 1 // memcpy() is good for large amounts of data, but the overhead is too big for small amounts. Use a simple byte loop instead.
+      char* pDst;
+      pDst = pRing->pBuffer + pRing->WrOff;
+      pRing->WrOff += NumBytes;
+      do {
+        *pDst++ = *pData++;
+      } while (--NumBytes);
+#else
+      memcpy(pRing->pBuffer + WrOff, pData, NumBytes);
+      pRing->WrOff += NumBytes;
+#endif
+      break;  //Alternatively: NumBytes = 0;
+    } else {
+      //
+      //  Wrap-around necessary, write until wrap-around and reset WrOff
+      //
+      memcpy(pRing->pBuffer + pRing->WrOff, pData, Avail);
+      pData += Avail;
+      pRing->WrOff = 0;
+      NumBytes -= Avail;
+      Avail = (pRing->SizeOfBuffer - 1);
+    }
+  } while (NumBytes);
 }
 
 /*********************************************************************
@@ -1047,7 +1175,7 @@ int SEGGER_RTT_SetNameDownBuffer(unsigned BufferIndex, const char* sName) {
 *
 */
 void SEGGER_RTT_Init (void) {
-  INIT();
+  _DoInit();
 }
 
 /*********************************************************************

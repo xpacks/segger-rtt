@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2014 - 2015  SEGGER Microcontroller GmbH & Co. KG        *
+*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -136,6 +136,7 @@ unsigned     SEGGER_RTT_Write            (unsigned BufferIndex, const void* pBuf
 unsigned     SEGGER_RTT_WriteNoLock      (unsigned BufferIndex, const void* pBuffer, unsigned NumBytes);
 unsigned     SEGGER_RTT_WriteSkipNoLock  (unsigned BufferIndex, const void* pBuffer, unsigned NumBytes);
 unsigned     SEGGER_RTT_WriteString      (unsigned BufferIndex, const char* s);
+void         SEGGER_RTT_WriteWithOverwriteNoLock(unsigned BufferIndex, const void* pBuffer, unsigned NumBytes);
 //
 // Function macro for performance optimization
 //
@@ -157,7 +158,6 @@ int     SEGGER_RTT_TerminalOut        (char TerminalId, const char* s);
 **********************************************************************
 */
 int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...);
-
 #ifdef __cplusplus
   }
 #endif

@@ -17,4 +17,4 @@ Root Directory
     - RTT_Syscalls_GCC.c          - Low-level syscalls to retarget printf() to RTT with GCC / Newlib.
     - RTT_Syscalls_IAR.c          - Low-level syscalls to retarget printf() to RTT with IAR compiler.
     - RTT_Syscalls_KEIL.c         - Low-level syscalls to retarget printf() to RTT with KEIL/uVision compiler.
-    - RTT_Syscalls_KEIL.c         - Low-level syscalls to retarget printf() to RTT with SEGGER Embedded Studio.
+    - RTT_Syscalls_SES.c          - Low-level syscalls to retarget printf() to RTT with SEGGER Embedded Studio.

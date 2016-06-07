@@ -5,7 +5,8 @@ IFS=$'\n\t'
 # Archives are to be downloaded from:
 URL_BASE=https://sourceforge.net/projects/micro-os-plus/files/Vendor%20Archives/SEGGER/
 
-RELEASE_VERSION="V510u"
+# RELEASE_VERSION="V510u"
+RELEASE_VERSION="V512"
 
 
 NAME_PREFIX="SEGGER_RTT_"

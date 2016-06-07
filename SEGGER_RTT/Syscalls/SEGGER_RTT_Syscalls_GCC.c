@@ -46,6 +46,19 @@ Purpose : Low-level functions for using printf() via RTT in GCC.
 #include <reent.h>  // required for _write_r
 #include "SEGGER_RTT.h"
 
+
+/*********************************************************************
+*
+*       Types
+*
+**********************************************************************
+*/
+//
+// If necessary define the _reent struct 
+// to match the one passed by the used standard library.
+//
+struct _reent;
+
 /*********************************************************************
 *
 *       Function prototypes
@@ -53,7 +66,7 @@ Purpose : Low-level functions for using printf() via RTT in GCC.
 **********************************************************************
 */
 int _write(int file, char *ptr, int len);
-int _write_r(struct _reent *r, int file, char *ptr, int len);
+int _write_r(struct _reent *r, int file, const void *ptr, int len);
 
 /*********************************************************************
 *
@@ -88,9 +101,9 @@ int _write(int file, char *ptr, int len) {
 *   including stdout.
 *   Write data via RTT.
 */
-int _write_r(struct _reent *r, int file, char *ptr, int len) {
+int _write_r(struct _reent *r, int file, const void *ptr, int len) {
   (void) file;  /* Not used, avoid warning */
-  (void) r;  /* Not used, avoid warning */
+  (void) r;     /* Not used, avoid warning */
   SEGGER_RTT_Write(0, ptr, len);
   return len;
 }
