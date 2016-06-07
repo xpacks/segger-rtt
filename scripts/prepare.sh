@@ -7,7 +7,8 @@ URL_BASE=https://sourceforge.net/projects/micro-os-plus/files/Vendor%20Archives/
 
 # RELEASE_VERSION="V510u"
 # RELEASE_VERSION="V512"
-RELEASE_VERSION="V512a"
+# RELEASE_VERSION="V512a"
+RELEASE_VERSION="V512b"
 
 
 NAME_PREFIX="SEGGER_RTT_"
