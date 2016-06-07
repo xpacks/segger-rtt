@@ -6,7 +6,8 @@ IFS=$'\n\t'
 URL_BASE=https://sourceforge.net/projects/micro-os-plus/files/Vendor%20Archives/SEGGER/
 
 # RELEASE_VERSION="V510u"
-RELEASE_VERSION="V512"
+# RELEASE_VERSION="V512"
+RELEASE_VERSION="V512a"
 
 
 NAME_PREFIX="SEGGER_RTT_"
