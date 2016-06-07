@@ -81,7 +81,7 @@ Purpose : Retargeting module for KEIL MDK-CM3.
 *
 **********************************************************************
 */
-const char __stdin_name[]  = "STDIN";
+//const char __stdin_name[]  = "STDIN";
 const char __stdout_name[] = "STDOUT";
 const char __stderr_name[] = "STDERR";
 
@@ -125,6 +125,7 @@ void _ttywrch(int c) {
 *
 */
 FILEHANDLE _sys_open(const char * sName, int OpenMode) {
+  (void)OpenMode;
   // Register standard Input Output devices.
   if (strcmp(sName, __stdout_name) == 0) {
     return (STDOUT);
@@ -149,6 +150,7 @@ FILEHANDLE _sys_open(const char * sName, int OpenMode) {
 *
 */
 int _sys_close(FILEHANDLE hFile) {
+  (void)hFile;
   return 0;  // Not implemented
 }
 
@@ -173,6 +175,7 @@ int _sys_close(FILEHANDLE hFile) {
 int _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned NumBytes, int Mode) {
   int r = 0;
 
+  (void)Mode;
   if (hFile == STDOUT) {
     return NumBytes - SEGGER_RTT_Write(0, (const char*)pBuffer, NumBytes);
   }
@@ -198,6 +201,10 @@ int _sys_write(FILEHANDLE hFile, const unsigned char * pBuffer, unsigned NumByte
 *
 */
 int _sys_read(FILEHANDLE hFile, unsigned char * pBuffer, unsigned NumBytes, int Mode) {
+  (void)hFile;
+  (void)pBuffer;
+  (void)NumBytes;
+  (void)Mode;
   return (0);  // Not implemented
 }
 
@@ -240,6 +247,8 @@ int _sys_istty(FILEHANDLE hFile) {
 *
 */
 int _sys_seek(FILEHANDLE hFile, long Pos) {
+  (void)hFile;
+  (void)Pos;
   return (0);  // Not implemented
 }
 
@@ -258,6 +267,7 @@ int _sys_seek(FILEHANDLE hFile, long Pos) {
 *
 */
 int _sys_ensure(FILEHANDLE hFile) {
+  (void)hFile;
   return (-1);  // Not implemented
 }
 
@@ -276,6 +286,7 @@ int _sys_ensure(FILEHANDLE hFile) {
 *
 */
 long _sys_flen(FILEHANDLE hFile) {
+  (void)hFile;
   return (0);  // Not implemented
 }
 
@@ -298,6 +309,9 @@ long _sys_flen(FILEHANDLE hFile) {
 *
 */
 int _sys_tmpnam(char * pBuffer, int FileNum, unsigned MaxLen) {
+  (void)pBuffer;
+  (void)FileNum;
+  (void)MaxLen;
   return (1);  // Not implemented
 }
 
@@ -318,6 +332,7 @@ int _sys_tmpnam(char * pBuffer, int FileNum, unsigned MaxLen) {
 *
 */
 char * _sys_command_string(char * cmd, int len) {
+  (void)len;
   return cmd;  // Not implemented
 }
 
@@ -334,5 +349,6 @@ char * _sys_command_string(char * cmd, int len) {
 *
 */
 void _sys_exit(int ReturnCode) {
+  (void)ReturnCode;
   while (1);  // Not implemented
 }

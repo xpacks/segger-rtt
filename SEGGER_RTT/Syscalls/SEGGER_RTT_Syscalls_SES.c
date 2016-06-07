@@ -3,7 +3,7 @@
 *       Solutions for real time microcontroller applications         *
 **********************************************************************
 *                                                                    *
-*       (c) 2014 - 2015  SEGGER Microcontroller GmbH & Co. KG        *
+*       (c) 2014 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -38,37 +38,186 @@
 **********************************************************************
 --------  END-OF-HEADER  ---------------------------------------------
 File    : SEGGER_RTT_Syscalls_SES.c
-Purpose : Reimplementation of printf, puts and 
-          implementation of __putchar and __getchar using RTT in SES.
+Purpose : Reimplementation of printf, puts and __getchar using RTT 
+          in SEGGER Embedded Studio.
           To use RTT for printf output, include this file in your 
           application.
 ----------------------------------------------------------------------
 */
 #include "SEGGER_RTT.h"
-#include "__libc.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include "limits.h"
+#include "__libc.h"
+#include "__vfprintf.h"
 
+/*********************************************************************
+*
+*       Defines, configurable
+*
+**********************************************************************
+*/
+//
+// Select string formatting implementation.
+//
+// RTT printf formatting
+//  - Configurable stack usage. (SEGGER_RTT_PRINTF_BUFFER_SIZE in SEGGER_RTT_Conf.h)
+//  - No maximum string length.
+//  - Limited conversion specifiers and flags. (See SEGGER_RTT_printf.c)
+// Standard library printf formatting
+//  - Configurable formatting capabilities.
+//  - Full conversion specifier and flag support.
+//  - Maximum string length has to be known or (slightly) slower character-wise output.
+// 
+// #define PRINTF_USE_SEGGER_RTT_FORMATTING    0 // Use standard library formatting
+// #define PRINTF_USE_SEGGER_RTT_FORMATTING    1 // Use RTT formatting
+//
+#ifndef   PRINTF_USE_SEGGER_RTT_FORMATTING
+  #define PRINTF_USE_SEGGER_RTT_FORMATTING    0
+#endif
+//
+// If using standard library formatting, 
+// select maximum output string buffer size or character-wise output.
+//
+// #define PRINTF_BUFFER_SIZE                  0 // Use character-wise output
+// #define PRINTF_BUFFER_SIZE                128 // Default maximum string length
+//
+#ifndef   PRINTF_BUFFER_SIZE
+  #define PRINTF_BUFFER_SIZE                128
+#endif
+
+#if PRINTF_USE_SEGGER_RTT_FORMATTING  // Use SEGGER RTT formatting implementation
+/*********************************************************************
+*
+*       Function prototypes
+*
+**********************************************************************
+*/
+int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pParamList);
+
+/*********************************************************************
+*
+*       Global functions, printf
+*
+**********************************************************************
+*/
+/********************************************************************* 
+*
+*       printf()
+*
+*  Function description
+*    print a formatted string using RTT and SEGGER RTT formatting.
+*/
 int printf(const char *fmt,...) {
-  char buffer[128];
+  int     n;
   va_list args;
+  
   va_start (args, fmt);
-  int n = vsnprintf(buffer, sizeof(buffer), fmt, args);
-  SEGGER_RTT_Write(0, buffer, n);
+  n = SEGGER_RTT_vprintf(0, fmt, &args);
   va_end(args);
   return n;
 }
 
-int puts(const char *s) {
-  return SEGGER_RTT_WriteString(0, s);
-}
+#elif PRINTF_BUFFER_SIZE == 0 // Use standard library formatting with character-wise output
 
-int __putchar(int x, __printf_tag_ptr ctx) {
+/*********************************************************************
+*
+*       Static functions
+*
+**********************************************************************
+*/
+static int _putchar(int x, __printf_tag_ptr ctx) {
   (void)ctx;
   SEGGER_RTT_Write(0, (char *)&x, 1);
   return x;
 }
 
+/*********************************************************************
+*
+*       Global functions, printf
+*
+**********************************************************************
+*/
+/********************************************************************* 
+*
+*       printf()
+*
+*  Function description
+*    print a formatted string character-wise, using RTT and standard 
+*    library formatting.
+*/
+int printf(const char *fmt, ...) {
+  int         n;
+  va_list     args;
+  __printf_t  iod;
+  
+  va_start(args, fmt);
+  iod.string    = 0;
+  iod.maxchars  = INT_MAX;
+  iod.output_fn = _putchar;
+  SEGGER_RTT_LOCK();
+  n = __vfprintf(&iod, fmt, args);
+  SEGGER_RTT_UNLOCK();
+  va_end(args);
+  return n;
+}
+
+#else // Use standard library formatting with static buffer
+
+/*********************************************************************
+*
+*       Global functions, printf
+*
+**********************************************************************
+*/
+/********************************************************************* 
+*
+*       printf()
+*
+*  Function description
+*    print a formatted string using RTT and standard library formatting.
+*/
+int printf(const char *fmt,...) {
+  int     n;
+  char    aBuffer[PRINTF_BUFFER_SIZE];
+  va_list args;
+  
+  va_start (args, fmt);
+  n = vsnprintf(aBuffer, sizeof(aBuffer), fmt, args);
+  if (n > (int)sizeof(aBuffer)) {
+    SEGGER_RTT_Write(0, aBuffer, sizeof(aBuffer));
+  } else if (n > 0) {
+    SEGGER_RTT_Write(0, aBuffer, n);
+  }
+  va_end(args);
+  return n;
+}
+#endif
+
+/*********************************************************************
+*
+*       Global functions
+*
+**********************************************************************
+*/
+/********************************************************************* 
+*
+*       puts()
+*
+*  Function description
+*    print a string using RTT.
+*/
+int puts(const char *s) {
+  return SEGGER_RTT_WriteString(0, s);
+}
+
+/********************************************************************* 
+*
+*       __getchar()
+*
+*  Function description
+*    Wait for and get a character via RTT.
+*/
 int __getchar() {
   return SEGGER_RTT_WaitKey();
 }

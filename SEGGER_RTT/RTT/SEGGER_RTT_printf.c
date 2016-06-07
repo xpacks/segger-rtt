@@ -381,8 +381,8 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
       c = *sFormat;
       do {
         if ((c == 'l') || (c == 'h')) {
-          c = *sFormat;
           sFormat++;
+          c = *sFormat;
         } else {
           break;
         }
@@ -484,9 +484,12 @@ int SEGGER_RTT_vprintf(unsigned BufferIndex, const char * sFormat, va_list * pPa
 *          p: Print the argument as an 8-digit hexadecimal integer. (Argument shall be a pointer to void.)
 */
 int SEGGER_RTT_printf(unsigned BufferIndex, const char * sFormat, ...) {
+  int r;
   va_list ParamList;
 
   va_start(ParamList, sFormat);
-  return SEGGER_RTT_vprintf(BufferIndex, sFormat, &ParamList);
+  r = SEGGER_RTT_vprintf(BufferIndex, sFormat, &ParamList);
+  va_end(ParamList);
+  return r;
 }
 /*************************** End of file ****************************/
