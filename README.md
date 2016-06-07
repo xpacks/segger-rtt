@@ -5,7 +5,7 @@ includes the SEGGER RTT files.
 
 ## Version
 
-* V512c
+* V512d
 
 ## Documentation
 
@@ -16,7 +16,7 @@ the J-Link manual [UM08001](https://www.segger.com/admin/uploads/productDocs/UM0
 
 The original files are available from the `originals` branch.
 
-These files were extracted from `SEGGER_RTT_V512c.tgz`.
+These files were extracted from `SEGGER_RTT_V512d.tgz`.
 
 To save space, the following folders/files were removed:
 
