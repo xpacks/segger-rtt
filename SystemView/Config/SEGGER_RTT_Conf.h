@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32a                                    *
+*       SystemView version: V2.32b                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -79,12 +79,15 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
 // If using  RTT from within interrupts, multiple tasks or multi processors, define the SEGGER_RTT_LOCK() and SEGGER_RTT_UNLOCK() function here.
 // 
 // SEGGER_RTT_MAX_INTERRUPT_PRIORITY can be used in the sample lock routines on Cortex-M3/4.
-// It should be set to mask all interrupts which can send RTT data, i.e. generate SystemView events, or cause task switches.
+// Make sure to mask all interrupts which can send RTT data, i.e. generate SystemView events, or cause task switches.
+// When high-priority interrupts must not be masked while sending RTT data, SEGGER_RTT_MAX_INTERRUPT_PRIORITY needs to be adjusted accordingly.
+// (Higher priority = lower priority number)
 // Default value for embOS: 128u
 // Default configuration in FreeRTOS: configMAX_SYSCALL_INTERRUPT_PRIORITY: ( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
+// In case of doubt mask all interrupts: 0u
 // 
 
-#define SEGGER_RTT_MAX_INTERRUPT_PRIORITY         (128u)   // Interrupt priority to lock on SEGGER_RTT_LLOCK on Cortex-M3/4 (Defualt: 128)
+#define SEGGER_RTT_MAX_INTERRUPT_PRIORITY         (0x20)   // Interrupt priority to lock on SEGGER_RTT_LOCK on Cortex-M3/4 (Default: 0x20)
 
 /*********************************************************************
 *
@@ -112,7 +115,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                   
   #elif (defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__))
     #ifndef   SEGGER_RTT_MAX_INTERRUPT_PRIORITY
-      #define SEGGER_RTT_MAX_INTERRUPT_PRIORITY   (128u)
+      #define SEGGER_RTT_MAX_INTERRUPT_PRIORITY   (0x20)
     #endif
     #define SEGGER_RTT_LOCK()   {                                                                   \
                                     unsigned int LockState;                                         \
@@ -151,7 +154,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                 }
   #elif ((defined (__ARM7EM__) && (__CORE__ == __ARM7EM__)) || (defined (__ARM7M__) && (__CORE__ == __ARM7M__)))
     #ifndef   SEGGER_RTT_MAX_INTERRUPT_PRIORITY
-      #define SEGGER_RTT_MAX_INTERRUPT_PRIORITY   (128u)
+      #define SEGGER_RTT_MAX_INTERRUPT_PRIORITY   (0x20)
     #endif
     #define SEGGER_RTT_LOCK()   {                                                                   \
                                   unsigned int LockState;                                           \
@@ -181,7 +184,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                 }
   #elif (defined(__TARGET_ARCH_7_M) || defined(__TARGET_ARCH_7E_M))
     #ifndef   SEGGER_RTT_MAX_INTERRUPT_PRIORITY
-      #define SEGGER_RTT_MAX_INTERRUPT_PRIORITY   (128u)
+      #define SEGGER_RTT_MAX_INTERRUPT_PRIORITY   (0x20)
     #endif
     #define SEGGER_RTT_LOCK()   {                                                                   \
                                   unsigned int LockState;                                           \

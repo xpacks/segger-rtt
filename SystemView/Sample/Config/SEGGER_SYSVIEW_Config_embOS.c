@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32a                                    *
+*       SystemView version: V2.32b                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -50,8 +50,10 @@ Purpose     : Sample setup configuration of SystemView with embOS.
 #include "SEGGER_SYSVIEW.h"
 #include "SEGGER_SYSVIEW_embOS.h"
 
+//
 // SystemcoreClock can be used in most CMSIS compatible projects.
 // In non-CMSIS projects define SYSVIEW_CPU_FREQ.
+//
 extern unsigned int SystemCoreClock;
 
 /*********************************************************************
@@ -89,6 +91,11 @@ extern unsigned int SystemCoreClock;
   #define SYSVIEW_SYSDESC0        "I#15=SysTick"
 #endif
 
+// Define as 1 if the Cortex-M cycle counter is used as SystemView timestamp. Must match SEGGER_SYSVIEW_Conf.h
+#ifndef   USE_CYCCNT_TIMESTAMP
+  #define USE_CYCCNT_TIMESTAMP    1
+#endif
+
 //#ifndef   SYSVIEW_SYSDESC1
 //  #define SYSVIEW_SYSDESC1      ""
 //#endif
@@ -97,7 +104,17 @@ extern unsigned int SystemCoreClock;
 //  #define SYSVIEW_SYSDESC2      ""
 //#endif
 
-/********************************************************************* 
+/*********************************************************************
+*
+*       Defines, fixed
+*
+**********************************************************************
+*/
+#define DWT_CTRL                  (*(volatile OS_U32*) (0xE0001000uL))  // DWT Control Register
+#define NOCYCCNT_BIT              (1uL << 25)                           // Cycle counter support bit
+#define CYCCNTENA_BIT             (1uL << 0)                            // Cycle counter enable bit
+
+/*********************************************************************
 *
 *       _cbSendSystemDesc()
 *
@@ -124,7 +141,18 @@ static void _cbSendSystemDesc(void) {
 **********************************************************************
 */
 void SEGGER_SYSVIEW_Conf(void) {
-  SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ, 
+#if USE_CYCCNT_TIMESTAMP
+  //
+  //  The cycle counter must be activated in order
+  //  to use time related functions.
+  //
+  if ((DWT_CTRL & NOCYCCNT_BIT) == 0) {       // Cycle counter supported?
+    if ((DWT_CTRL & CYCCNTENA_BIT) == 0) {    // Cycle counter not enabled?
+      DWT_CTRL |= CYCCNTENA_BIT;              // Enable Cycle counter
+    }
+  }
+#endif
+  SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ,
                       &SYSVIEW_X_OS_TraceAPI, _cbSendSystemDesc);
   SEGGER_SYSVIEW_SetRAMBase(SYSVIEW_RAM_BASE);
   OS_SetTraceAPI(&embOS_TraceAPI_SYSVIEW);    // Configure embOS to use SYSVIEW.

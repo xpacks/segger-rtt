@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32a                                    *
+*       SystemView version: V2.32b                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -110,6 +110,18 @@ static void _cbRecordU32x4(unsigned Id, OS_U32 Para0, OS_U32 Para1, OS_U32 Para2
       SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
 }
 
+static OS_U32 _ShrinkId(OS_U32 Ptr) {
+  return (OS_U32)SEGGER_SYSVIEW_ShrinkId(Ptr);
+}
+
+static void _RecordEnterTimer(OS_U32 TimerID) {
+  SEGGER_SYSVIEW_RecordEnterTimer(TimerID);
+}
+
+static void _RecordExitTimer(void) {
+  SEGGER_SYSVIEW_RecordExitTimer();
+}
+
 // embOS trace API that targets SYSVIEW
 const OS_TRACE_API embOS_TraceAPI_SYSVIEW = {
 //
@@ -133,10 +145,10 @@ _cbRecordU32,                                 //  void    (*pfRecordU32)      (u
 _cbRecordU32x2,                               //  void    (*pfRecordU32x2)    (unsigned Id, OS_U32 Para0, OS_U32 Para1);
 _cbRecordU32x3,                               //  void    (*pfRecordU32x3)    (unsigned Id, OS_U32 Para0, OS_U32 Para1, OS_U32 Para2);
 _cbRecordU32x4,                               //  void    (*pfRecordU32x4)    (unsigned Id, OS_U32 Para0, OS_U32 Para1, OS_U32 Para2, OS_U32 Para3);
-SEGGER_SYSVIEW_ShrinkId,                      //  OS_U32  (*pfPtrToId)        (OS_U32 Ptr);
+_ShrinkId,                                    //  OS_U32  (*pfPtrToId)        (OS_U32 Ptr);
 #if (OS_VERSION >= 41400)  // Tracing timer is supported since embOS V4.14
-SEGGER_SYSVIEW_RecordEnterTimer,              //  void    (*pfRecordEnterTimer)       (OS_U32 TimerID);
-SEGGER_SYSVIEW_RecordExitTimer                //  void    (*pfRecordExitTimer)        (void);
+_RecordEnterTimer,                            //  void    (*pfRecordEnterTimer)       (OS_U32 TimerID);
+_RecordExitTimer                              //  void    (*pfRecordExitTimer)        (void);
 #endif
 };
 
