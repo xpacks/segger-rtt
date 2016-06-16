@@ -5,7 +5,7 @@ includes the SEGGER SystemView source files.
 
 ## Version
 
-* V236
+* V236a
 
 ## Documentation
 
@@ -16,7 +16,7 @@ the SystemView manual [UM08027](https://www.segger.com/downloads/free_tools/UM08
 
 The original files are available from the `originals-sv` branch.
 
-These files were extracted from `SystemView_Src_V236.zip`.
+These files were extracted from `SystemView_Src_V236a.zip`.
 
 To save space, the following folders/files were removed:
 

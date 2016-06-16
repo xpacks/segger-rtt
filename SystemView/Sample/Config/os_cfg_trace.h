@@ -38,20 +38,20 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36                                    *
+*       SystemView version: V2.36a                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
-File        : trace_cfg.h
+File        : os_cfg_trace.h
 Purpose     : Minimal trace configuration file for Micrium uC/OS-III
               with SystemView.
 */
 
-#ifndef   TRACE_CFG_H
-#define   TRACE_CFG_H
+#ifndef   OS_CFG_TRACE_H
+#define   OS_CFG_TRACE_H
 
 #define  OS_CFG_TRACE_MAX_TASK                   16u
 #define  OS_CFG_TRACE_MAX_RESOURCES              16u
 
-#endif // TRACE_CFG_H
+#endif // OS_CFG_TRACE_H

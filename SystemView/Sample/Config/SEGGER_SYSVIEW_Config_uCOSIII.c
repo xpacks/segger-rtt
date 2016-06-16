@@ -38,13 +38,13 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36                                    *
+*       SystemView version: V2.36a                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File        : SEGGER_SYSVIEW_Config_FreeRTOS.c
-Purpose     : Sample setup configuration of SystemView with Micrium 
+Purpose     : Sample setup configuration of SystemView with Micrium
               uC/OS-III.
 */
 #include "SEGGER_SYSVIEW.h"

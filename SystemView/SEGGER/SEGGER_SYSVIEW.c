@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36                                    *
+*       SystemView version: V2.36a                                    *
 *                                                                    *
 **********************************************************************
 --------  END-OF-HEADER  ---------------------------------------------
@@ -1294,6 +1294,269 @@ void SEGGER_SYSVIEW_RecordU32x3(unsigned EventID, U32 Para0, U32 Para1, U32 Para
   ENCODE_U32(pPayload, Para0);
   ENCODE_U32(pPayload, Para1);
   ENCODE_U32(pPayload, Para2);
+  _SendPacket(pPayloadStart, pPayload, EventID);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordU32x4()
+*
+*  Function description
+*    Formats and sends a SystemView packet containing 4 U32 parameter payload.
+*
+*  Parameters
+*    EventID - SystemView event ID.
+*    Para0   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para1   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para2   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para3   - The 32-bit parameter encoded to SystemView packet payload.
+*/
+void SEGGER_SYSVIEW_RecordU32x4(unsigned EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 4 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, Para0);
+  ENCODE_U32(pPayload, Para1);
+  ENCODE_U32(pPayload, Para2);
+  ENCODE_U32(pPayload, Para3);
+  _SendPacket(pPayloadStart, pPayload, EventID);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordU32x5()
+*
+*  Function description
+*    Formats and sends a SystemView packet containing 5 U32 parameter payload.
+*
+*  Parameters
+*    EventID - SystemView event ID.
+*    Para0   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para1   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para2   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para3   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para4   - The 32-bit parameter encoded to SystemView packet payload.
+*/
+void SEGGER_SYSVIEW_RecordU32x5(unsigned EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 5 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, Para0);
+  ENCODE_U32(pPayload, Para1);
+  ENCODE_U32(pPayload, Para2);
+  ENCODE_U32(pPayload, Para3);
+  ENCODE_U32(pPayload, Para4);
+  _SendPacket(pPayloadStart, pPayload, EventID);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordU32x6()
+*
+*  Function description
+*    Formats and sends a SystemView packet containing 6 U32 parameter payload.
+*
+*  Parameters
+*    EventID - SystemView event ID.
+*    Para0   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para1   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para2   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para3   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para4   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para5   - The 32-bit parameter encoded to SystemView packet payload.
+*/
+void SEGGER_SYSVIEW_RecordU32x6(unsigned EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 6 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, Para0);
+  ENCODE_U32(pPayload, Para1);
+  ENCODE_U32(pPayload, Para2);
+  ENCODE_U32(pPayload, Para3);
+  ENCODE_U32(pPayload, Para4);
+  ENCODE_U32(pPayload, Para5);
+  _SendPacket(pPayloadStart, pPayload, EventID);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordU32x7()
+*
+*  Function description
+*    Formats and sends a SystemView packet containing 7 U32 parameter payload.
+*
+*  Parameters
+*    EventID - SystemView event ID.
+*    Para0   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para1   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para2   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para3   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para4   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para5   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para6   - The 32-bit parameter encoded to SystemView packet payload.
+*/
+void SEGGER_SYSVIEW_RecordU32x7(unsigned EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 7 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, Para0);
+  ENCODE_U32(pPayload, Para1);
+  ENCODE_U32(pPayload, Para2);
+  ENCODE_U32(pPayload, Para3);
+  ENCODE_U32(pPayload, Para4);
+  ENCODE_U32(pPayload, Para5);
+  ENCODE_U32(pPayload, Para6);
+  _SendPacket(pPayloadStart, pPayload, EventID);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordU32x8()
+*
+*  Function description
+*    Formats and sends a SystemView packet containing 8 U32 parameter payload.
+*
+*  Parameters
+*    EventID - SystemView event ID.
+*    Para0   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para1   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para2   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para3   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para4   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para5   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para6   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para7   - The 32-bit parameter encoded to SystemView packet payload.
+*/
+void SEGGER_SYSVIEW_RecordU32x8(unsigned EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 8 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, Para0);
+  ENCODE_U32(pPayload, Para1);
+  ENCODE_U32(pPayload, Para2);
+  ENCODE_U32(pPayload, Para3);
+  ENCODE_U32(pPayload, Para4);
+  ENCODE_U32(pPayload, Para5);
+  ENCODE_U32(pPayload, Para6);
+  ENCODE_U32(pPayload, Para7);
+  _SendPacket(pPayloadStart, pPayload, EventID);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordU32x9()
+*
+*  Function description
+*    Formats and sends a SystemView packet containing 9 U32 parameter payload.
+*
+*  Parameters
+*    EventID - SystemView event ID.
+*    Para0   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para1   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para2   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para3   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para4   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para5   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para6   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para7   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para8   - The 32-bit parameter encoded to SystemView packet payload.
+*/
+void SEGGER_SYSVIEW_RecordU32x9(unsigned EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 9 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, Para0);
+  ENCODE_U32(pPayload, Para1);
+  ENCODE_U32(pPayload, Para2);
+  ENCODE_U32(pPayload, Para3);
+  ENCODE_U32(pPayload, Para4);
+  ENCODE_U32(pPayload, Para5);
+  ENCODE_U32(pPayload, Para6);
+  ENCODE_U32(pPayload, Para7);
+  ENCODE_U32(pPayload, Para8);
+  _SendPacket(pPayloadStart, pPayload, EventID);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordU32x10()
+*
+*  Function description
+*    Formats and sends a SystemView packet containing 10 U32 parameter payload.
+*
+*  Parameters
+*    EventID - SystemView event ID.
+*    Para0   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para1   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para2   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para3   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para4   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para5   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para6   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para7   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para8   - The 32-bit parameter encoded to SystemView packet payload.
+*    Para9   - The 32-bit parameter encoded to SystemView packet payload.
+*/
+void SEGGER_SYSVIEW_RecordU32x10(unsigned EventID, U32 Para0, U32 Para1, U32 Para2, U32 Para3, U32 Para4, U32 Para5, U32 Para6, U32 Para7, U32 Para8, U32 Para9) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 10 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, Para0);
+  ENCODE_U32(pPayload, Para1);
+  ENCODE_U32(pPayload, Para2);
+  ENCODE_U32(pPayload, Para3);
+  ENCODE_U32(pPayload, Para4);
+  ENCODE_U32(pPayload, Para5);
+  ENCODE_U32(pPayload, Para6);
+  ENCODE_U32(pPayload, Para7);
+  ENCODE_U32(pPayload, Para8);
+  ENCODE_U32(pPayload, Para9);
+  _SendPacket(pPayloadStart, pPayload, EventID);
+  RECORD_END();
+}
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_EncodeString()
+*
+*  Function description
+*    Formats and sends a SystemView packet containing a string.
+*
+*  Parameters
+*    EventID - SystemView event ID.
+*    pString - The string to be sent in the SystemView packet payload.
+*
+*  Additional information
+*    The string is encoded as a count byte followed by the contents
+*    of the string.
+*    No more than SEGGER_SYSVIEW_MAX_STRING_LEN bytes will be encoded to the payload.
+*/
+void SEGGER_SYSVIEW_RecordString(unsigned EventID, const char* pString) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 1 + SEGGER_SYSVIEW_MAX_STRING_LEN);
+  //
+  pPayload = _EncodeStr(pPayloadStart, pString, SEGGER_SYSVIEW_MAX_STRING_LEN);
   _SendPacket(pPayloadStart, pPayload, EventID);
   RECORD_END();
 }

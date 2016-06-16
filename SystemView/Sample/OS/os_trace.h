@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36                                    *
+*       SystemView version: V2.36a                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -57,7 +57,7 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 *********************************************************************************************************
 */
 
-#if OS_CFG_TRACE_EN > 0
+#if (defined(OS_CFG_TRACE_EN) && (OS_CFG_TRACE_EN > 0u))
 #define  OS_TRACE_INIT()                             SEGGER_SYSVIEW_Conf()
 #define  OS_TRACE_START()                            SEGGER_SYSVIEW_Start()
 #define  OS_TRACE_STOP()                             SEGGER_SYSVIEW_Stop()
@@ -74,7 +74,7 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 *********************************************************************************************************
 */
 
-#if OS_CFG_TRACE_EN > 0
+#if (defined(OS_CFG_TRACE_EN) && (OS_CFG_TRACE_EN > 0u))
 #define OS_TRACE_ID_OFFSET                           (32u)
 
 #define OS_TRACE_ID_TICK_INCREMENT                   ( 1u + OS_TRACE_ID_OFFSET)
@@ -115,7 +115,7 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 *********************************************************************************************************
 */
 
-#if OS_CFG_TRACE_EN > 0
+#if (defined(OS_CFG_TRACE_EN) && (OS_CFG_TRACE_EN > 0u))
 #define  OS_TRACE_TASK_CREATE(p_tcb)                if (p_tcb != 0) {                            \
                                                       SEGGER_SYSVIEW_OnTaskCreate((U32)p_tcb);   \
                                                       SYSVIEW_AddTask((U32)p_tcb,                \
@@ -174,7 +174,7 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 *********************************************************************************************************
 */
 
-#if OS_CFG_TRACE_API_ENTER_EN > 0
+#if (defined(OS_CFG_TRACE_API_ENTER_EN) && (OS_CFG_TRACE_API_ENTER_EN > 0u))
 #define  OS_TRACE_MUTEX_DEL_ENTER(p_mutex, opt, p_err)                                    SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_MUTEX_DEL,       SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)opt)
 #define  OS_TRACE_MUTEX_POST_ENTER(p_mutex, opt, p_err)                                   SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_MUTEX_POST,      SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)opt)
 #define  OS_TRACE_MUTEX_PEND_ENTER(p_mutex, timeout, opt, p_ts, p_err)                    SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_MUTEX_PEND,      SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)timeout,  (U32)opt)
@@ -221,7 +221,7 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 *********************************************************************************************************
 */
 
-#if OS_CFG_TRACE_API_EXIT_EN > 0
+#if (defined(OS_CFG_TRACE_API_EXIT_EN) && (OS_CFG_TRACE_API_EXIT_EN > 0u))
 #define  OS_TRACE_MUTEX_DEL_EXIT(RetVal)                                                  SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_MUTEX_DEL,       RetVal)
 #define  OS_TRACE_MUTEX_POST_EXIT(RetVal)                                                 SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_MUTEX_POST,      RetVal)
 #define  OS_TRACE_MUTEX_PEND_EXIT(RetVal)                                                 SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_MUTEX_PEND,      RetVal)
@@ -268,45 +268,46 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 *********************************************************************************************************
 */
 
-#define  OS_TRACE_MUTEX_DEL(p_mutex) 
-#define  OS_TRACE_MUTEX_POST(p_mutex)                         
-#define  OS_TRACE_MUTEX_PEND(p_mutex)                         
-#define  OS_TRACE_TASK_MSG_Q_POST(p_msg_q)  
-#define  OS_TRACE_TASK_MSG_Q_PEND(p_msg_q)  
-#define  OS_TRACE_TASK_SEM_POST(p_tcb)                        
-#define  OS_TRACE_TASK_SEM_PEND(p_tcb)      
-#define  OS_TRACE_SEM_DEL(p_sem)                              
-#define  OS_TRACE_SEM_POST(p_sem)                             
-#define  OS_TRACE_SEM_PEND(p_sem)           
-#define  OS_TRACE_Q_DEL(p_q)                                  
-#define  OS_TRACE_Q_POST(p_q)                                 
-#define  OS_TRACE_Q_PEND(p_q)               
-#define  OS_TRACE_FLAG_DEL(p_grp)                             
-#define  OS_TRACE_FLAG_POST(p_grp)                            
-#define  OS_TRACE_FLAG_PEND(p_grp)                
-#define  OS_TRACE_MEM_PUT(p_mem)                              
-#define  OS_TRACE_MEM_GET(p_mem)                              
-#define  OS_TRACE_MUTEX_POST_FAILED(p_mutex)                  
-#define  OS_TRACE_MUTEX_PEND_FAILED(p_mutex)                  
-#define  OS_TRACE_MUTEX_PEND_BLOCK(p_mutex)                   
-#define  OS_TRACE_TASK_CREATE_FAILED(p_tcb)                   
-#define  OS_TRACE_TASK_MSG_Q_POST_FAILED(p_msg_q)             
-#define  OS_TRACE_TASK_MSG_Q_PEND_FAILED(p_msg_q)             
-#define  OS_TRACE_TASK_MSG_Q_PEND_BLOCK(p_msg_q)              
-#define  OS_TRACE_TASK_SEM_POST_FAILED(p_tcb)                 
-#define  OS_TRACE_TASK_SEM_PEND_FAILED(p_tcb)                 
-#define  OS_TRACE_TASK_SEM_PEND_BLOCK(p_tcb)                  
-#define  OS_TRACE_SEM_POST_FAILED(p_sem)                      
-#define  OS_TRACE_SEM_PEND_FAILED(p_sem)                      
-#define  OS_TRACE_SEM_PEND_BLOCK(p_sem)                       
-#define  OS_TRACE_Q_POST_FAILED(p_q)                          
-#define  OS_TRACE_Q_PEND_FAILED(p_q)                          
-#define  OS_TRACE_Q_PEND_BLOCK(p_q)                           
-#define  OS_TRACE_FLAG_POST_FAILED(p_grp)                     
-#define  OS_TRACE_FLAG_PEND_FAILED(p_grp)                     
-#define  OS_TRACE_FLAG_PEND_BLOCK(p_grp)                      
-#define  OS_TRACE_MEM_PUT_FAILED(p_mem)                       
-#define  OS_TRACE_MEM_GET_FAILED(p_mem)                       
+#define  OS_TRACE_MUTEX_DEL(p_mutex)
+#define  OS_TRACE_MUTEX_POST(p_mutex)
+#define  OS_TRACE_MUTEX_PEND(p_mutex)
+#define  OS_TRACE_TASK_MSG_Q_POST(p_msg_q)
+#define  OS_TRACE_TASK_MSG_Q_PEND(p_msg_q)
+#define  OS_TRACE_TASK_SEM_POST(p_tcb)
+#define  OS_TRACE_TASK_SEM_PEND(p_tcb)
+#define  OS_TRACE_SEM_DEL(p_sem)
+#define  OS_TRACE_SEM_POST(p_sem)
+#define  OS_TRACE_SEM_PEND(p_sem)
+#define  OS_TRACE_Q_DEL(p_q)
+#define  OS_TRACE_Q_POST(p_q)
+#define  OS_TRACE_Q_PEND(p_q)
+#define  OS_TRACE_FLAG_DEL(p_grp)
+#define  OS_TRACE_FLAG_POST(p_grp)
+#define  OS_TRACE_FLAG_PEND(p_grp)
+#define  OS_TRACE_MEM_PUT(p_mem)
+#define  OS_TRACE_MEM_GET(p_mem)
+#define  OS_TRACE_MUTEX_POST_FAILED(p_mutex)
+#define  OS_TRACE_MUTEX_PEND_FAILED(p_mutex)
+#define  OS_TRACE_MUTEX_PEND_BLOCK(p_mutex)
+#define  OS_TRACE_TASK_CREATE_FAILED(p_tcb)
+#define  OS_TRACE_TASK_MSG_Q_POST_FAILED(p_msg_q)
+#define  OS_TRACE_TASK_MSG_Q_PEND_FAILED(p_msg_q)
+#define  OS_TRACE_TASK_MSG_Q_PEND_BLOCK(p_msg_q)
+#define  OS_TRACE_TASK_SEM_POST_FAILED(p_tcb)
+#define  OS_TRACE_TASK_SEM_PEND_FAILED(p_tcb)
+#define  OS_TRACE_TASK_SEM_PEND_BLOCK(p_tcb)
+#define  OS_TRACE_SEM_POST_FAILED(p_sem)
+#define  OS_TRACE_SEM_PEND_FAILED(p_sem)
+#define  OS_TRACE_SEM_PEND_BLOCK(p_sem)
+#define  OS_TRACE_Q_POST_FAILED(p_q)
+#define  OS_TRACE_Q_PEND_FAILED(p_q)
+#define  OS_TRACE_Q_PEND_BLOCK(p_q)
+#define  OS_TRACE_FLAG_POST_FAILED(p_grp)
+#define  OS_TRACE_FLAG_PEND_FAILED(p_grp)
+#define  OS_TRACE_FLAG_PEND_BLOCK(p_grp)
+#define  OS_TRACE_MEM_PUT_FAILED(p_mem)
+#define  OS_TRACE_MEM_GET_FAILED(p_mem)
+#define  OS_TRACE_TASK_PRIO_CHANGE(p_tcb, prio)
 
 #else // OS_CFG_TRACE_EN > 0
 
@@ -321,7 +322,6 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 #define  OS_TRACE_TASK_SUSPEND(p_tcb)
 #define  OS_TRACE_TASK_RESUME(p_tcb)
 
-#define  OS_TRACE_ISR_REGISTER(isr_id, isr_name, isr_prio)
 #define  OS_TRACE_ISR_BEGIN(isr_id)
 #define  OS_TRACE_ISR_END()
 
@@ -383,6 +383,8 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 #define  OS_TRACE_MEM_PUT_FAILED(p_mem)
 #define  OS_TRACE_MEM_GET(p_mem)
 #define  OS_TRACE_MEM_GET_FAILED(p_mem)
+
+#define  OS_TRACE_TASK_PRIO_CHANGE(p_tcb, prio)
 
 #define  OS_TRACE_MUTEX_DEL_ENTER(p_mutex, opt, p_err)
 #define  OS_TRACE_MUTEX_POST_ENTER(p_mutex, opt, p_err)
