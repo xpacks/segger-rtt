@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32b                                    *
+*       SystemView version: V2.34                                    *
 *                                                                    *
 **********************************************************************
 ---------------------------END-OF-HEADER------------------------------
@@ -95,6 +95,12 @@ Additional information:
   #define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS                  2    // Number of down-buffers (H->T) available on this target
 #endif
 
+#ifndef SEGGER_RTT_BUFFER_SECTION
+  #if defined SEGGER_RTT_SECTION
+    #define SEGGER_RTT_BUFFER_SECTION SEGGER_RTT_SECTION
+  #endif
+#endif
+
 #ifndef   SEGGER_RTT_MODE_DEFAULT
   #define SEGGER_RTT_MODE_DEFAULT                         SEGGER_RTT_MODE_NO_BLOCK_SKIP
 #endif
@@ -145,14 +151,43 @@ static unsigned char _aTerminalId[16] = { '0', '1', '2', '3', '4', '5', '6', '7'
 **********************************************************************
 */
 //
-// Allocate buffers for channel 0
+// RTT Control Block and allocate buffers for channel 0
 //
-static char _acUpBuffer  [BUFFER_SIZE_UP];
-static char _acDownBuffer[BUFFER_SIZE_DOWN];
-//
-// Initialize SEGGER Real-time-Terminal control block (CB)
-//
-SEGGER_RTT_CB _SEGGER_RTT;
+#ifdef SEGGER_RTT_SECTION
+  #if (defined __GNUC__)
+    __attribute__ ((section (SEGGER_RTT_SECTION))) SEGGER_RTT_CB _SEGGER_RTT;
+  #elif (defined __ICCARM__) || (defined __ICCRX__)
+    #pragma location=SEGGER_RTT_SECTION
+    SEGGER_RTT_CB _SEGGER_RTT;
+  #elif (defined __CC_ARM__)
+    __attribute__ ((section (SEGGER_RTT_SECTION), zero_init)) SEGGER_RTT_CB _SEGGER_RTT;
+  #else
+    SEGGER_RTT_CB _SEGGER_RTT;
+  #endif
+#else
+    SEGGER_RTT_CB _SEGGER_RTT;
+#endif
+
+#ifdef SEGGER_RTT_BUFFER_SECTION
+  #if (defined __GNUC__)
+    __attribute__ ((section (SEGGER_RTT_BUFFER_SECTION))) static char _acUpBuffer  [BUFFER_SIZE_UP];
+    __attribute__ ((section (SEGGER_RTT_BUFFER_SECTION))) static char _acDownBuffer[BUFFER_SIZE_DOWN];
+  #elif (defined __ICCARM__) || (defined __ICCRX__)
+    #pragma location=SEGGER_RTT_BUFFER_SECTION
+    static char _acUpBuffer  [BUFFER_SIZE_UP];
+    #pragma location=SEGGER_RTT_BUFFER_SECTION
+    static char _acDownBuffer[BUFFER_SIZE_DOWN];
+  #elif (defined __CC_ARM__)
+    __attribute__ ((section (SEGGER_RTT_BUFFER_SECTION), zero_init)) static char _acUpBuffer  [BUFFER_SIZE_UP];
+    __attribute__ ((section (SEGGER_RTT_BUFFER_SECTION), zero_init)) static char _acDownBuffer[BUFFER_SIZE_DOWN];
+  #else
+    static char _acUpBuffer  [BUFFER_SIZE_UP];
+    static char _acDownBuffer[BUFFER_SIZE_DOWN];
+  #endif
+#else
+    static char _acUpBuffer  [BUFFER_SIZE_UP];
+    static char _acDownBuffer[BUFFER_SIZE_DOWN];
+#endif
 
 static char _ActiveTerminal;
 

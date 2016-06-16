@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32b                                    *
+*       SystemView version: V2.34                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -133,7 +133,31 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
                                                   :                                                 \
                                                   );                                                \
                                 }
-  #else
+  
+  #elif defined(__ARM_ARCH_7A__)
+    #define SEGGER_RTT_LOCK() {                                                \
+                                 unsigned int LockState;                       \
+                                 __asm volatile ("mrs r1, CPSR \n\t"           \
+                                                 "mov %0, r1 \n\t"             \
+                                                 "orr r1, r1, #0xC0 \n\t"      \
+                                                 "msr CPSR_c, r1 \n\t"         \
+                                                 : "=r" (LockState)            \
+                                                 :                             \
+                                                 : "r1"                        \
+                                                 );
+
+    #define SEGGER_RTT_UNLOCK() __asm volatile ("mov r0, %0 \n\t"              \
+                                                "mrs r1, CPSR \n\t"            \
+                                                "bic r1, r1, #0xC0 \n\t"       \
+                                                "and r0, r0, #0xC0 \n\t"       \
+                                                "orr r1, r1, r0 \n\t"          \
+                                                "msr CPSR_c, r1 \n\t"          \
+                                                :                              \
+                                                : "r" (LockState)              \
+                                                : "r0", "r1"                   \
+                                                );                             \
+                            }
+#else
     #define SEGGER_RTT_LOCK()  
     #define SEGGER_RTT_UNLOCK()
   #endif
