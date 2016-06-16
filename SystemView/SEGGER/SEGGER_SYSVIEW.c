@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32                                    *
+*       SystemView version: V2.32a                                    *
 *                                                                    *
 **********************************************************************
 --------  END-OF-HEADER  ---------------------------------------------
@@ -1288,7 +1288,9 @@ void SEGGER_SYSVIEW_Start(void) {
 #if (SEGGER_SYSVIEW_POST_MORTEM_MODE == 1)
     _SendSyncInfo();
 #else
-    SEGGER_RTT_WriteSkip(CHANNEL_ID_UP, _abSync, 10);
+    SEGGER_SYSVIEW_LOCK();
+    SEGGER_RTT_WriteSkipNoLock(CHANNEL_ID_UP, _abSync, 10);
+    SEGGER_SYSVIEW_UNLOCK();
     SEGGER_SYSVIEW_RecordVoid(SEGGER_SYSVIEW_EVENT_ID_TRACE_START);
     {
       U8* pPayload;

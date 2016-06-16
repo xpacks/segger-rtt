@@ -5,7 +5,8 @@ IFS=$'\n\t'
 # Archives are to be downloaded from:
 URL_BASE=https://sourceforge.net/projects/micro-os-plus/files/Vendor%20Archives/SEGGER/
 
-RELEASE_VERSION="V232"
+# RELEASE_VERSION="V232"
+RELEASE_VERSION="V232a"
 
 
 NAME_PREFIX="SystemView_Src_"

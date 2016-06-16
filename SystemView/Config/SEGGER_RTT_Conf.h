@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.32                                    *
+*       SystemView version: V2.32a                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -117,7 +117,7 @@ Purpose : Implementation of SEGGER real-time transfer (RTT) which
     #define SEGGER_RTT_LOCK()   {                                                                   \
                                     unsigned int LockState;                                         \
                                   __asm volatile ("mrs   %0, basepri  \n\t"                         \
-                                                  "mov   r1, $128     \n\t"                         \
+                                                  "mov   r1, %1       \n\t"                         \
                                                   "msr   basepri, r1  \n\t"                         \
                                                   : "=r" (LockState)                                \
                                                   : "i"(SEGGER_RTT_MAX_INTERRUPT_PRIORITY)          \
