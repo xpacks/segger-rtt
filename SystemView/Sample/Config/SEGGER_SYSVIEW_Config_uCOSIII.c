@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.34                                    *
+*       SystemView version: V2.36                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -86,6 +86,8 @@ extern const SEGGER_SYSVIEW_OS_API SYSVIEW_X_OS_TraceAPI;
 static void _cbSendSystemDesc(void) {
   SEGGER_SYSVIEW_SendSysDesc("N="SYSVIEW_APP_NAME",D="SYSVIEW_DEVICE_NAME",O=uCOS-III");
   SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick");
+  //
+  SYSVIEW_SendResourceList();
 }
 
 /*********************************************************************

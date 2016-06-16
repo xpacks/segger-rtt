@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.34                                    *
+*       SystemView version: V2.36                                    *
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
@@ -149,6 +149,8 @@ void SEGGER_SYSVIEW_RecordExitISR                 (void);
 void SEGGER_SYSVIEW_RecordExitISRToScheduler      (void);
 void SEGGER_SYSVIEW_RecordEnterTimer              (U32 TimerId);
 void SEGGER_SYSVIEW_RecordExitTimer               (void);
+void SEGGER_SYSVIEW_RecordEndCall                 (unsigned EventID);
+void SEGGER_SYSVIEW_RecordEndCallReturnValue      (unsigned EventID, unsigned ReturnValue);
 
 void SEGGER_SYSVIEW_OnIdle                        (void);
 void SEGGER_SYSVIEW_OnTaskCreate                  (unsigned TaskId);

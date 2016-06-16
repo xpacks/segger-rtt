@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.34                                    *
+*       SystemView version: V2.36                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
@@ -46,11 +46,16 @@
 File    : SEGGER_SYSVIEW_uCOSIII.c
 Purpose : Interface between Micrium uC/OS-III and SystemView.
 */
-#include "trace_os.h"
+
+#include <os_trace.h>
 
 #ifndef SYSVIEW_MEMSET
   #include <string.h>
   #define SYSVIEW_MEMSET(p, v, n)   memset(p, v, n)
+#endif
+
+#ifndef  OS_CFG_TRACE_MAX_RESOURCES
+#define  OS_CFG_TRACE_MAX_RESOURCES              0
 #endif
 
 typedef struct SYSVIEW_UCOSIII_TASK_STATUS SYSVIEW_UCOSIII_TASK_STATUS;
@@ -63,8 +68,21 @@ struct SYSVIEW_UCOSIII_TASK_STATUS {
   CPU_STK_SIZE  StkSize;
 };
 
-static SYSVIEW_UCOSIII_TASK_STATUS _aTasks[TRACE_CFG_MAX_TASK];
+typedef struct SYSVIEW_UCOSIII_RESOURCE SYSVIEW_UCOSIII_RESOURCE;
+
+struct SYSVIEW_UCOSIII_RESOURCE {
+  U32         ResourceId;
+  const char* sResource;
+  U32         Registered;
+};
+
+static SYSVIEW_UCOSIII_TASK_STATUS _aTasks[OS_CFG_TRACE_MAX_TASK];
 static unsigned _NumTasks;
+
+#if OS_CFG_TRACE_MAX_RESOURCES > 0
+static SYSVIEW_UCOSIII_RESOURCE _aResources[OS_CFG_TRACE_MAX_RESOURCES];
+static unsigned                 _NumResources;
+#endif
 
 /*********************************************************************
 *
@@ -161,7 +179,7 @@ void SYSVIEW_TaskSuspend(U32 TaskID) {
 */
 void SYSVIEW_AddTask(U32 TaskID, const char* NamePtr, OS_PRIO Prio, CPU_STK* StkBasePtr, CPU_STK_SIZE StkSize) {
   if (TaskID != (U32)&OSIdleTaskTCB) {
-    if (_NumTasks >= TRACE_CFG_MAX_TASK) {
+    if (_NumTasks >= OS_CFG_TRACE_MAX_TASK) {
       SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not record task information. Maximum number of tasks reached.");
       return;
     }
@@ -268,6 +286,43 @@ void SYSVIEW_RecordU32x5(unsigned Id, U32 Para0, U32 Para1, U32 Para2, U32 Para3
       pPayload = SEGGER_SYSVIEW_EncodeU32(pPayload, Para4);             // Add the fifth parameter to the packet
       //
       SEGGER_SYSVIEW_SendPacket(&aPacket[0], pPayload, Id);             // Send the packet
+}
+/*********************************************************************
+*
+*       SYSVIEW_RecordU32Register()
+*
+*  Function description
+*    Record an event with 1 parameter and register the resource to be 
+*    sent in the system description.
+*/
+void SYSVIEW_RecordU32Register(unsigned EventId, U32 ResourceId, const char* sResource) {  
+  SEGGER_SYSVIEW_NameResource(ResourceId, sResource);
+  SEGGER_SYSVIEW_RecordU32(EventId, SEGGER_SYSVIEW_ShrinkId(ResourceId));
+#if OS_CFG_TRACE_MAX_RESOURCES > 0
+  if (_NumResources >= OS_CFG_TRACE_MAX_RESOURCES) {
+    SEGGER_SYSVIEW_Warn("SYSTEMVIEW: Could not register resource name. Maximum number of resources reached.");
+    return;
+  }
+
+  _aResources[_NumResources].ResourceId = ResourceId;
+  _aResources[_NumResources].sResource  = sResource;
+  _aResources[_NumResources].Registered = 0;
+
+  _NumResources++;
+#endif
+}
+
+void SYSVIEW_SendResourceList(void) {
+#if OS_CFG_TRACE_MAX_RESOURCES > 0
+  unsigned int n;
+
+  for (n = 0; n < _NumResources; n++) {
+    if (_aResources[n].Registered == 0) {
+      SEGGER_SYSVIEW_NameResource(_aResources[n].ResourceId, _aResources[n].sResource);
+      _aResources[n].Registered = 1;
+    }
+  }
+#endif
 }
 
 /*********************************************************************

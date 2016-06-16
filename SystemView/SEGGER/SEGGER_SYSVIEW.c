@@ -38,7 +38,7 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.34                                    *
+*       SystemView version: V2.36                                    *
 *                                                                    *
 **********************************************************************
 --------  END-OF-HEADER  ---------------------------------------------
@@ -1158,9 +1158,9 @@ void SEGGER_SYSVIEW_Init(U32 SysFreq, U32 CPUFreq, const SEGGER_SYSVIEW_OS_API *
 #endif
 #if (SEGGER_SYSVIEW_POST_MORTEM_MODE == 1)
 #if SEGGER_SYSVIEW_RTT_CHANNEL > 0
-  SEGGER_RTT_ConfigUpBuffer(SEGGER_SYSVIEW_RTT_CHANNEL, "SysView", &_SYSVIEW_Globals.UpBuffer[0],   sizeof(_SYSVIEW_Globals.UpBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  SEGGER_RTT_ConfigUpBuffer(SEGGER_SYSVIEW_RTT_CHANNEL, "SysView", &_UpBuffer[0],   sizeof(_UpBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 #else
-  _SYSVIEW_Globals.UpChannel = SEGGER_RTT_AllocUpBuffer  ("SysView", &_SYSVIEW_Globals.UpBuffer[0],   sizeof(_SYSVIEW_Globals.UpBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
+  _SYSVIEW_Globals.UpChannel = SEGGER_RTT_AllocUpBuffer  ("SysView", &_UpBuffer[0],   sizeof(_UpBuffer),   SEGGER_RTT_MODE_NO_BLOCK_SKIP);
 #endif
   _SYSVIEW_Globals.RAMBaseAddress   = SEGGER_SYSVIEW_ID_BASE;
   _SYSVIEW_Globals.LastTxTimeStamp  = SEGGER_SYSVIEW_GET_TIMESTAMP();
@@ -1599,6 +1599,50 @@ void SEGGER_SYSVIEW_RecordExitTimer(void) {
 
 /*********************************************************************
 *
+*       SEGGER_SYSVIEW_RecordEndCall()
+*
+*  Function description
+*    Format and send an End API Call event without return value.
+*  
+*  Parameters
+*    EventID - Id of API function which ends.
+*/
+void SEGGER_SYSVIEW_RecordEndCall(unsigned EventID) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, EventID);
+  _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_END_CALL);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_RecordEndCallReturnValue()
+*
+*  Function description
+*    Format and send an End API Call event with return value.
+*  
+*  Parameters
+*    EventID      - Id of API function which ends.
+*    ReturnValue  - Return value which will be returned by the API function.
+*/
+void SEGGER_SYSVIEW_RecordEndCallReturnValue(unsigned EventID, unsigned ReturnValue) {
+  U8* pPayload;
+  U8* pPayloadStart;
+  RECORD_START(SEGGER_SYSVIEW_INFO_SIZE + 2 * SEGGER_SYSVIEW_QUANTA_U32);
+  //
+  pPayload = pPayloadStart;
+  ENCODE_U32(pPayload, EventID);
+  ENCODE_U32(pPayload, ReturnValue);
+  _SendPacket(pPayloadStart, pPayload, SEGGER_SYSVIEW_EVENT_ID_END_CALL);
+  RECORD_END();
+}
+
+/*********************************************************************
+*
 *       SEGGER_SYSVIEW_OnIdle()
 *
 *  Function description
@@ -1804,7 +1848,13 @@ void SEGGER_SYSVIEW_NameResource(U32 ResourceId, const char* sName) {
 *    ==0:  Buffer full, Message *NOT* sent.
 */
 int SEGGER_SYSVIEW_SendPacket(U8* pPacket, U8* pPayloadEnd, unsigned EventId) {
+#if (SEGGER_SYSVIEW_USE_STATIC_BUFFER == 1)
+  SEGGER_SYSVIEW_LOCK();
+#endif
   _SendPacket(pPacket + 4, pPayloadEnd, EventId);
+#if (SEGGER_SYSVIEW_USE_STATIC_BUFFER == 1)
+  SEGGER_SYSVIEW_UNLOCK();
+#endif
   return 0;
 }
 
