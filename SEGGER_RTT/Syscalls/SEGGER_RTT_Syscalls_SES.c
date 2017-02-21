@@ -9,17 +9,32 @@
 *                                                                    *
 **********************************************************************
 *                                                                    *
+*       SEGGER RTT * Real Time Transfer for embedded targets         *
+*                                                                    *
+**********************************************************************
+*                                                                    *
 * All rights reserved.                                               *
 *                                                                    *
-* * This software may in its unmodified form be freely redistributed *
-*   in source form.                                                  *
-* * The source code may be modified, provided the source code        *
-*   retains the above copyright notice, this list of conditions and  *
-*   the following disclaimer.                                        *
-* * Modified versions of this software in source or linkable form    *
-*   may not be distributed without prior consent of SEGGER.          *
-* * This software may only be used for communication with SEGGER     *
-*   J-Link debug probes.                                             *
+* SEGGER strongly recommends to not make any changes                 *
+* to or modify the source code of this software in order to stay     *
+* compatible with the RTT protocol and J-Link.                       *
+*                                                                    *
+* Redistribution and use in source and binary forms, with or         *
+* without modification, are permitted provided that the following    *
+* conditions are met:                                                *
+*                                                                    *
+* o Redistributions of source code must retain the above copyright   *
+*   notice, this list of conditions and the following disclaimer.    *
+*                                                                    *
+* o Redistributions in binary form must reproduce the above          *
+*   copyright notice, this list of conditions and the following      *
+*   disclaimer in the documentation and/or other materials provided  *
+*   with the distribution.                                           *
+*                                                                    *
+* o Neither the name of SEGGER Microcontroller GmbH & Co. KG         *
+*   nor the names of its contributors may be used to endorse or      *
+*   promote products derived from this software without specific     *
+*   prior written permission.                                        *
 *                                                                    *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
 * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
@@ -36,14 +51,17 @@
 * DAMAGE.                                                            *
 *                                                                    *
 **********************************************************************
---------  END-OF-HEADER  ---------------------------------------------
+---------------------------END-OF-HEADER------------------------------
 File    : SEGGER_RTT_Syscalls_SES.c
 Purpose : Reimplementation of printf, puts and __getchar using RTT 
           in SEGGER Embedded Studio.
           To use RTT for printf output, include this file in your 
           application.
+Revision: $Rev: 4351 $
 ----------------------------------------------------------------------
 */
+#if (defined __SES_ARM) || (defined __CROSSWORKS_ARM)
+  
 #include "SEGGER_RTT.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -213,6 +231,19 @@ int puts(const char *s) {
 
 /********************************************************************* 
 *
+*       __putchar()
+*
+*  Function description
+*    Write one character via RTT.
+*/
+int __putchar(int x, __printf_tag_ptr ctx) {
+  (void)ctx;
+  SEGGER_RTT_Write(0, (char *)&x, 1);
+  return x;
+}
+
+/********************************************************************* 
+*
 *       __getchar()
 *
 *  Function description
@@ -222,4 +253,5 @@ int __getchar() {
   return SEGGER_RTT_WaitKey();
 }
 
+#endif
 /****** End Of File *************************************************/
