@@ -55,101 +55,168 @@
 *       SystemView version: V2.40d                                    *
 *                                                                    *
 **********************************************************************
-----------------------------------------------------------------------
-File    : SEGGER.h
-Purpose : Global types etc & general purpose utility functions
----------------------------END-OF-HEADER------------------------------
+-------------------------- END-OF-HEADER -----------------------------
+
+File    : SEGGER_SYSVIEW_Config_embOS_RX.c
+Purpose : Sample setup configuration of SystemView with embOS
+          on Renesas RX systems.
+Revision: $Rev: 3734 $              
+*/
+#include "RTOS.h"
+#include "SEGGER_SYSVIEW.h"
+#include "SEGGER_SYSVIEW_embOS.h"
+
+//
+// SystemcoreClock can be used in most CMSIS compatible projects.
+// In non-CMSIS projects define SYSVIEW_CPU_FREQ directly.
+//
+extern unsigned int SystemCoreClock;
+
+/*********************************************************************
+*
+*       Defines, fixed
+*
+**********************************************************************
 */
 
-#ifndef SEGGER_H            // Guard against multiple inclusion
-#define SEGGER_H
-
-#include "Global.h"         // Type definitions: U8, U16, U32, I8, I16, I32
-
-#if defined(__cplusplus)
-extern "C" {     /* Make sure we have C-declarations in C++ programs */
+/*********************************************************************
+*
+*       Defines, configurable
+*
+**********************************************************************
+*/
+// The application name to be displayed in SystemViewer
+#ifndef   SYSVIEW_APP_NAME
+  #define SYSVIEW_APP_NAME          "Demo Application"
 #endif
 
-/*********************************************************************
-*
-*       Keywords/specifiers
-*
-**********************************************************************
-*/
-
-#ifndef INLINE
-  #ifdef _WIN32
-    //
-    // Microsoft VC6 and newer.
-    // Force inlining without cost checking.
-    //
-    #define INLINE  __forceinline
-  #else
-    #if (defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__) || defined(__RX) || defined(__ICCRX__))
-      //
-      // Other known compilers.
-      //
-      #define INLINE  inline
-    #else
-      //
-      // Unknown compilers.
-      //
-      #define INLINE
-    #endif
-  #endif
+// The target device name
+#ifndef   SYSVIEW_DEVICE_NAME
+  #define SYSVIEW_DEVICE_NAME       "RX64M"
 #endif
 
-/*********************************************************************
-*
-*       Function-like macros
-*
-**********************************************************************
-*/
-
-#define SEGGER_COUNTOF(a)          (sizeof((a))/sizeof((a)[0]))
-#define SEGGER_MIN(a,b)            (((a) < (b)) ? (a) : (b))
-#define SEGGER_MAX(a,b)            (((a) > (b)) ? (a) : (b))
-
-/*********************************************************************
-*
-*       Types
-*
-**********************************************************************
-*/
-
-typedef struct {
-  char *pBuffer;
-  int   BufferSize;
-  int   Cnt;
-} SEGGER_BUFFER_DESC;
-
-typedef struct {
-  int  CacheLineSize;                                // 0: No Cache. Most Systems such as ARM9 use a 32 bytes cache line size.
-  void (*pfDMB)       (void);                        // Optional DMB function for Data Memory Barrier to make sure all memory operations are completed.
-  void (*pfClean)     (void *p, unsigned NumBytes);  // Optional clean function for cached memory.
-  void (*pfInvalidate)(void *p, unsigned NumBytes);  // Optional invalidate function for cached memory.
-} SEGGER_CACHE_CONFIG;
-
-/*********************************************************************
-*
-*       Utility functions
-*
-**********************************************************************
-*/
-
-void SEGGER_ARM_memcpy   (void *pDest, const void *pSrc, int NumBytes);
-void SEGGER_memcpy       (void *pDest, const void *pSrc, int NumBytes);
-void SEGGER_memxor       (void *pDest, const void *pSrc, unsigned NumBytes);
-void SEGGER_StoreChar    (SEGGER_BUFFER_DESC *p, char c);
-void SEGGER_PrintUnsigned(SEGGER_BUFFER_DESC *pBufferDesc, U32 v, unsigned Base, int NumDigits);
-void SEGGER_PrintInt     (SEGGER_BUFFER_DESC *pBufferDesc, I32 v, unsigned Base, unsigned NumDigits);
-int  SEGGER_snprintf     (char *pBuffer, int BufferSize, const char *sFormat, ...);
-
-
-#if defined(__cplusplus)
-}                /* Make sure we have C-declarations in C++ programs */
+// System Frequency. SystemcoreClock is used in most CMSIS compatible projects.
+#ifndef   SYSVIEW_CPU_FREQ
+  #define SYSVIEW_CPU_FREQ        (SystemCoreClock)
 #endif
 
-#endif                      // Avoid multiple inclusion
+// Frequency of the timestamp. Must match SEGGER_SYSVIEW_Conf.h and RTOSInit.c
+#ifndef   SYSVIEW_TIMESTAMP_FREQ
+  #define SYSVIEW_TIMESTAMP_FREQ  (SYSVIEW_CPU_FREQ/2u/8u) // Assume system timer runs at 1/16th of the CPU frequency
+#endif
+
+// The lowest RAM address used for IDs (pointers)
+#ifndef   SYSVIEW_RAM_BASE
+  #define SYSVIEW_RAM_BASE        (0)
+#endif
+
+#ifndef   SYSVIEW_SYSDESC0
+  #define SYSVIEW_SYSDESC0        "I#0=IntPrio0,I#1=IntPrio1,I#2=IntPrio2,I#3=IntPrio3,I#4=IntPrio4"
+#endif
+
+//#ifndef   SYSVIEW_SYSDESC1
+//  #define SYSVIEW_SYSDESC1      "I#5=IntPrio5,I#6=IntPrio6,I#7=IntPrio7,I#8=IntPrio8,I#9=IntPrio9,I#10=IntPrio10"
+//#endif
+
+//#ifndef   SYSVIEW_SYSDESC2
+//  #define SYSVIEW_SYSDESC2      "I#11=IntPrio11,I#12=IntPrio12,I#13=IntPrio13,I#14=IntPrio14,I#15=IntPrio15"
+//#endif
+
+// System Timer configuration
+#define IRR_BASE_ADDR        (0x00087000u)
+#define CMT0_VECT            28u
+#define OS_TIMER_VECT        CMT0_VECT
+#define TIMER_PRESCALE       (8u)
+#define CMT0_BASE_ADDR       (0x00088000u)
+#define CMT0_CMCNT           (*(volatile U16*) (CMT0_BASE_ADDR + 0x04u))
+
+extern unsigned SEGGER_SYSVIEW_TickCnt;  // Tick Counter value incremented in the tick handler.
+
+/*********************************************************************
+*
+*       _cbSendSystemDesc()
+*
+*  Function description
+*    Sends SystemView description strings.
+*/
+static void _cbSendSystemDesc(void) {
+  SEGGER_SYSVIEW_SendSysDesc("N="SYSVIEW_APP_NAME",O=embOS,D="SYSVIEW_DEVICE_NAME);
+#ifdef SYSVIEW_SYSDESC0
+  SEGGER_SYSVIEW_SendSysDesc(SYSVIEW_SYSDESC0);
+#endif
+#ifdef SYSVIEW_SYSDESC1
+  SEGGER_SYSVIEW_SendSysDesc(SYSVIEW_SYSDESC1);
+#endif
+#ifdef SYSVIEW_SYSDESC2
+  SEGGER_SYSVIEW_SendSysDesc(SYSVIEW_SYSDESC2);
+#endif
+}
+
+/*********************************************************************
+*
+*       Global functions
+*
+**********************************************************************
+*/
+void SEGGER_SYSVIEW_Conf(void) {
+  SEGGER_SYSVIEW_Init(SYSVIEW_TIMESTAMP_FREQ, SYSVIEW_CPU_FREQ,
+                      &SYSVIEW_X_OS_TraceAPI, _cbSendSystemDesc);
+  SEGGER_SYSVIEW_SetRAMBase(SYSVIEW_RAM_BASE);
+  OS_SetTraceAPI(&embOS_TraceAPI_SYSVIEW);    // Configure embOS to use SYSVIEW.
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_X_GetTimestamp()
+*
+* Function description
+*   Returns the current timestamp in ticks using the system tick
+*   count and the SysTick counter.
+*   All parameters of the SysTick have to be known and are set via
+*   configuration defines on top of the file.
+*
+* Return value
+*   The current timestamp.
+*
+* Additional information
+*   SEGGER_SYSVIEW_X_GetTimestamp is always called when interrupts are
+*   disabled. 
+*   Therefore locking here is not required and OS_GetTime_Cycles() may
+*   be called.
+*/
+U32 SEGGER_SYSVIEW_X_GetTimestamp(void) {
+  U32 Time;
+  U32 Cnt;
+
+  Time = SEGGER_SYSVIEW_TickCnt;
+  Cnt  = CMT0_CMCNT;
+  //
+  // Check if timer interrupt pending ...
+  //
+  if ((*(volatile U8*)(IRR_BASE_ADDR + OS_TIMER_VECT) & (1u << 0u)) != 0u) {
+    Cnt = CMT0_CMCNT;      // Interrupt pending, re-read timer and adjust result
+    Time++;
+  }
+  return ((SYSVIEW_TIMESTAMP_FREQ/1000) * Time) + Cnt;
+}
+
+/*********************************************************************
+*
+*       SEGGER_SYSVIEW_X_GetInterruptId()
+*
+*  Function description
+*    Return the priority of the currently active interrupt.
+*/
+U32 SEGGER_SYSVIEW_X_GetInterruptId(void) {
+  U32 IntId;
+ __asm volatile ("mvfc    PSW, %0           \t\n" // Load current PSW
+                 "and     #0x0F000000, %0   \t\n" // Clear all except IPL ([27:24])
+                 "shlr    #24, %0           \t\n" // Shift IPL to [3:0]
+                 : "=r" (IntId)                   // Output result
+                 :                                // Input
+                 :                                // Clobbered list
+                );
+  return IntId;
+}
 
 /*************************** End of file ****************************/
