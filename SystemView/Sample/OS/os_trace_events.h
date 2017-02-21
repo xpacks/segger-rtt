@@ -1,9 +1,9 @@
 /*********************************************************************
-*               SEGGER MICROCONTROLLER GmbH & Co. KG                 *
-*       Solutions for real time microcontroller applications         *
+*                SEGGER Microcontroller GmbH & Co. KG                *
+*                        The Embedded Experts                        *
 **********************************************************************
 *                                                                    *
-*       (c) 2015 - 2016  SEGGER Microcontroller GmbH & Co. KG        *
+*       (c) 2015 - 2017  SEGGER Microcontroller GmbH & Co. KG        *
 *                                                                    *
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
@@ -15,36 +15,51 @@
 *                                                                    *
 * All rights reserved.                                               *
 *                                                                    *
-* * This software may in its unmodified form be freely redistributed *
-*   in source form.                                                  *
-* * The source code may be modified, provided the source code        *
-*   retains the above copyright notice, this list of conditions and  *
-*   the following disclaimer.                                        *
-* * Modified versions of this software in source or linkable form    *
-*   may not be distributed without prior consent of SEGGER.          *
+* SEGGER strongly recommends to not make any changes                 *
+* to or modify the source code of this software in order to stay     *
+* compatible with the RTT protocol and J-Link.                       *
 *                                                                    *
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND     *
-* ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,  *
-* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A        *
-* PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL               *
-* SEGGER Microcontroller BE LIABLE FOR ANY DIRECT, INDIRECT,         *
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES           *
-* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS    *
-* OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS            *
-* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,       *
-* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING          *
-* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS *
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.       *
+* Redistribution and use in source and binary forms, with or         *
+* without modification, are permitted provided that the following    *
+* conditions are met:                                                *
+*                                                                    *
+* o Redistributions of source code must retain the above copyright   *
+*   notice, this list of conditions and the following disclaimer.    *
+*                                                                    *
+* o Redistributions in binary form must reproduce the above          *
+*   copyright notice, this list of conditions and the following      *
+*   disclaimer in the documentation and/or other materials provided  *
+*   with the distribution.                                           *
+*                                                                    *
+* o Neither the name of SEGGER Microcontroller GmbH & Co. KG         *
+*   nor the names of its contributors may be used to endorse or      *
+*   promote products derived from this software without specific     *
+*   prior written permission.                                        *
+*                                                                    *
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND             *
+* CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,        *
+* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF           *
+* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE           *
+* DISCLAIMED. IN NO EVENT SHALL SEGGER Microcontroller BE LIABLE FOR *
+* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR           *
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT  *
+* OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;    *
+* OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF      *
+* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT          *
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE  *
+* USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH   *
+* DAMAGE.                                                            *
 *                                                                    *
 **********************************************************************
 *                                                                    *
-*       SystemView version: V2.36a                                    *
+*       SystemView version: V2.40d                                    *
 *                                                                    *
 **********************************************************************
 -------------------------- END-OF-HEADER -----------------------------
 
 File    : os_trace.h
 Purpose : Interface header for Micrium uC/OS-III and SystemView.
+Revision: $Rev: 3809 $
 */
 #include "SEGGER_SYSVIEW.h"
 #include "os.h"
@@ -52,9 +67,9 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 
 /*
-*********************************************************************************************************
-*                                        uC/OS-III Trace Macros
-*********************************************************************************************************
+************************************************************************************************************************
+*                                               uC/OS-III Trace Macros
+************************************************************************************************************************
 */
 
 #if (defined(OS_CFG_TRACE_EN) && (OS_CFG_TRACE_EN > 0u))
@@ -69,9 +84,9 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 
 /*
-*********************************************************************************************************
-*                              uC/OS-III Trace fixed defines for SystemView
-*********************************************************************************************************
+************************************************************************************************************************
+*                                     uC/OS-III Trace fixed defines for SystemView
+************************************************************************************************************************
 */
 
 #if (defined(OS_CFG_TRACE_EN) && (OS_CFG_TRACE_EN > 0u))
@@ -110,9 +125,9 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 
 /*
-*********************************************************************************************************
-*                                   uC/OS-III Trace Kernel-Related Macros
-*********************************************************************************************************
+************************************************************************************************************************
+*                                          uC/OS-III Trace Kernel-Related Macros
+************************************************************************************************************************
 */
 
 #if (defined(OS_CFG_TRACE_EN) && (OS_CFG_TRACE_EN > 0u))
@@ -129,7 +144,8 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 #define  OS_TRACE_TASK_READY(p_tcb)                 SYSVIEW_TaskReady((U32)p_tcb)
 #define  OS_TRACE_TASK_SWITCHED_IN(p_tcb)           SYSVIEW_TaskSwitchedIn((U32)p_tcb)
 #define  OS_TRACE_TASK_DLY(dly_ticks)
-#define  OS_TRACE_TASK_SUSPEND(p_tcb)               SYSVIEW_TaskSuspend((U32)p_tcb)
+#define  OS_TRACE_TASK_SUSPEND(p_tcb)
+#define  OS_TRACE_TASK_SUSPENDED(p_tcb)             SYSVIEW_TaskSuspend((U32)p_tcb)
 #define  OS_TRACE_TASK_RESUME(p_tcb)                SYSVIEW_TaskReady((U32)p_tcb)
 
 #define  OS_TRACE_ISR_BEGIN(isr_id)
@@ -141,9 +157,9 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 
 /*
-*********************************************************************************************************
-*                               uC/OS-III Trace Simple Recorder Functions
-*********************************************************************************************************
+************************************************************************************************************************
+*                                      uC/OS-III Trace Simple Recorder Functions
+************************************************************************************************************************
 */
 
 #define  OS_TRACE_TICK_INCREMENT(OSTickCtr)                SEGGER_SYSVIEW_RecordU32  (OS_TRACE_ID_TICK_INCREMENT,             (U32)OSTickCtr)
@@ -154,9 +170,9 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 
 /*
-*********************************************************************************************************
-*                               uC/OS-III Trace Complex Recorder Functions
-*********************************************************************************************************
+************************************************************************************************************************
+*                                      uC/OS-III Trace Complex Recorder Functions
+************************************************************************************************************************
 */
 
 #define  OS_TRACE_MUTEX_CREATE(p_mutex, p_name)      SYSVIEW_RecordU32Register(OS_TRACE_ID_MUTEX_CREATE,      ((U32)p_mutex), p_name)
@@ -169,77 +185,77 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 
 /*
-*********************************************************************************************************
-*                                  uC/OS-III Trace API Enter Functions
-*********************************************************************************************************
+************************************************************************************************************************
+*                                         uC/OS-III Trace API Enter Functions
+************************************************************************************************************************
 */
 
 #if (defined(OS_CFG_TRACE_API_ENTER_EN) && (OS_CFG_TRACE_API_ENTER_EN > 0u))
-#define  OS_TRACE_MUTEX_DEL_ENTER(p_mutex, opt, p_err)                                    SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_MUTEX_DEL,       SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)opt)
-#define  OS_TRACE_MUTEX_POST_ENTER(p_mutex, opt, p_err)                                   SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_MUTEX_POST,      SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)opt)
-#define  OS_TRACE_MUTEX_PEND_ENTER(p_mutex, timeout, opt, p_ts, p_err)                    SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_MUTEX_PEND,      SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)timeout,  (U32)opt)
-#define  OS_TRACE_TASK_MSG_Q_POST_ENTER(p_msg_q, p_void, msg_size, opt, p_err)            SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_TASK_MSG_Q_POST, SEGGER_SYSVIEW_ShrinkId((U32)p_msg_q), (U32)msg_size, (U32)opt)
-#define  OS_TRACE_TASK_MSG_Q_PEND_ENTER(p_msg_q, timeout, opt, p_msg_size, p_ts, p_err)   SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_TASK_MSG_Q_PEND, SEGGER_SYSVIEW_ShrinkId((U32)p_msg_q), (U32)timeout,  (U32)opt)
-#define  OS_TRACE_TASK_SEM_POST_ENTER(p_tcb, opt, p_err)                                  SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_TASK_SEM_POST,   SEGGER_SYSVIEW_ShrinkId((U32)p_tcb),   (U32)opt)
-#define  OS_TRACE_TASK_SEM_PEND_ENTER(p_tcb, timeout, opt, p_ts, p_err)                   SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_TASK_SEM_PEND,   SEGGER_SYSVIEW_ShrinkId((U32)p_tcb),   (U32)timeout,  (U32)opt)
-#define  OS_TRACE_SEM_DEL_ENTER(p_sem, opt, p_err)                                        SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_SEM_DEL,         SEGGER_SYSVIEW_ShrinkId((U32)p_sem),   (U32)opt)
-#define  OS_TRACE_SEM_POST_ENTER(p_sem, opt, p_err)                                       SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_SEM_POST,        SEGGER_SYSVIEW_ShrinkId((U32)p_sem),   (U32)opt)
-#define  OS_TRACE_SEM_PEND_ENTER(p_sem, timeout, opt, p_ts, p_err)                        SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_SEM_PEND,        SEGGER_SYSVIEW_ShrinkId((U32)p_sem),   (U32)timeout,  (U32)opt)
-#define  OS_TRACE_Q_DEL_ENTER(p_q, opt, p_err)                                            SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_Q_DEL,           SEGGER_SYSVIEW_ShrinkId((U32)p_q),     (U32)opt)
-#define  OS_TRACE_Q_POST_ENTER(p_q, p_void, msg_size, opt, p_err)                         SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_Q_POST,          SEGGER_SYSVIEW_ShrinkId((U32)p_q),     (U32)msg_size, (U32)opt)
-#define  OS_TRACE_Q_PEND_ENTER(p_q, timeout, opt, p_msg_size, p_ts, p_err)                SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_Q_PEND,          SEGGER_SYSVIEW_ShrinkId((U32)p_q),     (U32)timeout,  (U32)opt)
-#define  OS_TRACE_FLAG_DEL_ENTER(p_grp, opt, p_err)                                       SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_FLAG_DEL,        SEGGER_SYSVIEW_ShrinkId((U32)p_grp),   (U32)opt)
-#define  OS_TRACE_FLAG_POST_ENTER(p_grp, flags, opt, p_err)                               SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_FLAG_POST,       SEGGER_SYSVIEW_ShrinkId((U32)p_grp),   (U32)flags,    (U32)opt)
-#define  OS_TRACE_FLAG_PEND_ENTER(p_grp, flags, timeout, opt, p_ts, p_err)                SYSVIEW_RecordU32x4       (OS_TRACE_ID_FLAG_PEND,       SEGGER_SYSVIEW_ShrinkId((U32)p_grp),   (U32)flags,    (U32)timeout, (U32)opt)
-#define  OS_TRACE_MEM_PUT_ENTER(p_mem, p_blk, p_err)                                      SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_MEM_PUT,         SEGGER_SYSVIEW_ShrinkId((U32)p_mem),   (U32)p_blk)
-#define  OS_TRACE_MEM_GET_ENTER(p_mem, p_err)                                             SEGGER_SYSVIEW_RecordU32  (OS_TRACE_ID_MEM_GET,         SEGGER_SYSVIEW_ShrinkId((U32)p_mem))
+#define  OS_TRACE_MUTEX_DEL_ENTER(p_mutex, opt)                                    SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_MUTEX_DEL,       SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)opt)
+#define  OS_TRACE_MUTEX_POST_ENTER(p_mutex, opt)                                   SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_MUTEX_POST,      SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)opt)
+#define  OS_TRACE_MUTEX_PEND_ENTER(p_mutex, timeout, opt, p_ts)                    SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_MUTEX_PEND,      SEGGER_SYSVIEW_ShrinkId((U32)p_mutex), (U32)timeout,  (U32)opt)
+#define  OS_TRACE_TASK_MSG_Q_POST_ENTER(p_msg_q, p_void, msg_size, opt)            SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_TASK_MSG_Q_POST, SEGGER_SYSVIEW_ShrinkId((U32)p_msg_q), (U32)msg_size, (U32)opt)
+#define  OS_TRACE_TASK_MSG_Q_PEND_ENTER(p_msg_q, timeout, opt, p_msg_size, p_ts)   SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_TASK_MSG_Q_PEND, SEGGER_SYSVIEW_ShrinkId((U32)p_msg_q), (U32)timeout,  (U32)opt)
+#define  OS_TRACE_TASK_SEM_POST_ENTER(p_tcb, opt)                                  SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_TASK_SEM_POST,   SEGGER_SYSVIEW_ShrinkId((U32)p_tcb),   (U32)opt)
+#define  OS_TRACE_TASK_SEM_PEND_ENTER(p_tcb, timeout, opt, p_ts)                   SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_TASK_SEM_PEND,   SEGGER_SYSVIEW_ShrinkId((U32)p_tcb),   (U32)timeout,  (U32)opt)
+#define  OS_TRACE_SEM_DEL_ENTER(p_sem, opt)                                        SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_SEM_DEL,         SEGGER_SYSVIEW_ShrinkId((U32)p_sem),   (U32)opt)
+#define  OS_TRACE_SEM_POST_ENTER(p_sem, opt)                                       SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_SEM_POST,        SEGGER_SYSVIEW_ShrinkId((U32)p_sem),   (U32)opt)
+#define  OS_TRACE_SEM_PEND_ENTER(p_sem, timeout, opt, p_ts)                        SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_SEM_PEND,        SEGGER_SYSVIEW_ShrinkId((U32)p_sem),   (U32)timeout,  (U32)opt)
+#define  OS_TRACE_Q_DEL_ENTER(p_q, opt)                                            SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_Q_DEL,           SEGGER_SYSVIEW_ShrinkId((U32)p_q),     (U32)opt)
+#define  OS_TRACE_Q_POST_ENTER(p_q, p_void, msg_size, opt)                         SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_Q_POST,          SEGGER_SYSVIEW_ShrinkId((U32)p_q),     (U32)msg_size, (U32)opt)
+#define  OS_TRACE_Q_PEND_ENTER(p_q, timeout, opt, p_msg_size, p_ts)                SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_Q_PEND,          SEGGER_SYSVIEW_ShrinkId((U32)p_q),     (U32)timeout,  (U32)opt)
+#define  OS_TRACE_FLAG_DEL_ENTER(p_grp, opt)                                       SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_FLAG_DEL,        SEGGER_SYSVIEW_ShrinkId((U32)p_grp),   (U32)opt)
+#define  OS_TRACE_FLAG_POST_ENTER(p_grp, flags, opt)                               SEGGER_SYSVIEW_RecordU32x3(OS_TRACE_ID_FLAG_POST,       SEGGER_SYSVIEW_ShrinkId((U32)p_grp),   (U32)flags,    (U32)opt)
+#define  OS_TRACE_FLAG_PEND_ENTER(p_grp, flags, timeout, opt, p_ts)                SYSVIEW_RecordU32x4       (OS_TRACE_ID_FLAG_PEND,       SEGGER_SYSVIEW_ShrinkId((U32)p_grp),   (U32)flags,    (U32)timeout, (U32)opt)
+#define  OS_TRACE_MEM_PUT_ENTER(p_mem, p_blk)                                      SEGGER_SYSVIEW_RecordU32x2(OS_TRACE_ID_MEM_PUT,         SEGGER_SYSVIEW_ShrinkId((U32)p_mem),   (U32)p_blk)
+#define  OS_TRACE_MEM_GET_ENTER(p_mem)                                             SEGGER_SYSVIEW_RecordU32  (OS_TRACE_ID_MEM_GET,         SEGGER_SYSVIEW_ShrinkId((U32)p_mem))
 #else
-#define  OS_TRACE_MUTEX_DEL_ENTER(p_mutex, opt, p_err)
-#define  OS_TRACE_MUTEX_POST_ENTER(p_mutex, opt, p_err)
-#define  OS_TRACE_MUTEX_PEND_ENTER(p_mutex, timeout, opt, p_ts, p_err)
-#define  OS_TRACE_TASK_MSG_Q_POST_ENTER(p_msg_q, p_void, msg_size, opt, p_err)
-#define  OS_TRACE_TASK_MSG_Q_PEND_ENTER(p_msg_q, timeout, opt, p_msg_size, p_ts, p_err)
-#define  OS_TRACE_TASK_SEM_POST_ENTER(p_tcb, opt, p_err)
-#define  OS_TRACE_TASK_SEM_PEND_ENTER(p_tcb, timeout, opt, p_ts, p_err)
-#define  OS_TRACE_SEM_DEL_ENTER(p_sem, opt, p_err)
-#define  OS_TRACE_SEM_POST_ENTER(p_sem, opt, p_err)
-#define  OS_TRACE_SEM_PEND_ENTER(p_sem, timeout, opt, p_ts, p_err)
-#define  OS_TRACE_Q_DEL_ENTER(p_q, opt, p_err)
-#define  OS_TRACE_Q_POST_ENTER(p_q, p_void, msg_size, opt, p_err)
-#define  OS_TRACE_Q_PEND_ENTER(p_q, timeout, opt, p_msg_size, p_ts, p_err)
-#define  OS_TRACE_FLAG_DEL_ENTER(p_grp, opt, p_err)
-#define  OS_TRACE_FLAG_POST_ENTER(p_grp, flags, opt, p_err)
-#define  OS_TRACE_FLAG_PEND_ENTER(p_grp, flags, timeout, opt, p_ts, p_err)
-#define  OS_TRACE_MEM_PUT_ENTER(p_mem, p_blk, p_err)
-#define  OS_TRACE_MEM_GET_ENTER(p_mem, p_err)
+#define  OS_TRACE_MUTEX_DEL_ENTER(p_mutex, opt)
+#define  OS_TRACE_MUTEX_POST_ENTER(p_mutex, opt)
+#define  OS_TRACE_MUTEX_PEND_ENTER(p_mutex, timeout, opt, p_ts)
+#define  OS_TRACE_TASK_MSG_Q_POST_ENTER(p_msg_q, p_void, msg_size, opt)
+#define  OS_TRACE_TASK_MSG_Q_PEND_ENTER(p_msg_q, timeout, opt, p_msg_size, p_ts)
+#define  OS_TRACE_TASK_SEM_POST_ENTER(p_tcb, opt)
+#define  OS_TRACE_TASK_SEM_PEND_ENTER(p_tcb, timeout, opt, p_ts)
+#define  OS_TRACE_SEM_DEL_ENTER(p_sem, opt)
+#define  OS_TRACE_SEM_POST_ENTER(p_sem, opt)
+#define  OS_TRACE_SEM_PEND_ENTER(p_sem, timeout, opt, p_ts)
+#define  OS_TRACE_Q_DEL_ENTER(p_q, opt)
+#define  OS_TRACE_Q_POST_ENTER(p_q, p_void, msg_size, opt)
+#define  OS_TRACE_Q_PEND_ENTER(p_q, timeout, opt, p_msg_size, p_ts)
+#define  OS_TRACE_FLAG_DEL_ENTER(p_grp, opt)
+#define  OS_TRACE_FLAG_POST_ENTER(p_grp, flags, opt)
+#define  OS_TRACE_FLAG_PEND_ENTER(p_grp, flags, timeout, opt, p_ts)
+#define  OS_TRACE_MEM_PUT_ENTER(p_mem, p_blk)
+#define  OS_TRACE_MEM_GET_ENTER(p_mem)
 #endif
 
 
 /*
-*********************************************************************************************************
-*                                  uC/OS-III Trace API Exit Functions
-*********************************************************************************************************
+************************************************************************************************************************
+*                                         uC/OS-III Trace API Exit Functions
+************************************************************************************************************************
 */
 
 #if (defined(OS_CFG_TRACE_API_EXIT_EN) && (OS_CFG_TRACE_API_EXIT_EN > 0u))
-#define  OS_TRACE_MUTEX_DEL_EXIT(RetVal)                                                  SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_MUTEX_DEL,       RetVal)
-#define  OS_TRACE_MUTEX_POST_EXIT(RetVal)                                                 SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_MUTEX_POST,      RetVal)
-#define  OS_TRACE_MUTEX_PEND_EXIT(RetVal)                                                 SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_MUTEX_PEND,      RetVal)
-#define  OS_TRACE_TASK_MSG_Q_POST_EXIT(RetVal)                                            SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_TASK_MSG_Q_POST, RetVal)
-#define  OS_TRACE_TASK_MSG_Q_PEND_EXIT(RetVal)                                            SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_TASK_MSG_Q_PEND, RetVal)
-#define  OS_TRACE_TASK_SEM_POST_EXIT(RetVal)                                              SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_TASK_SEM_POST,   RetVal)
-#define  OS_TRACE_TASK_SEM_PEND_EXIT(RetVal)                                              SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_TASK_SEM_PEND,   RetVal)
-#define  OS_TRACE_SEM_DEL_EXIT(RetVal)                                                    SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_SEM_DEL,         RetVal)
-#define  OS_TRACE_SEM_POST_EXIT(RetVal)                                                   SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_SEM_POST,        RetVal)
-#define  OS_TRACE_SEM_PEND_EXIT(RetVal)                                                   SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_SEM_PEND,        RetVal)
-#define  OS_TRACE_Q_DEL_EXIT(RetVal)                                                      SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_Q_DEL,           RetVal)
-#define  OS_TRACE_Q_POST_EXIT(RetVal)                                                     SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_Q_POST,          RetVal)
-#define  OS_TRACE_Q_PEND_EXIT(RetVal)                                                     SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_Q_PEND,          RetVal)
-#define  OS_TRACE_FLAG_DEL_EXIT(RetVal)                                                   SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_FLAG_DEL,        RetVal)
-#define  OS_TRACE_FLAG_POST_EXIT(RetVal)                                                  SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_FLAG_POST,       RetVal)
-#define  OS_TRACE_FLAG_PEND_EXIT(RetVal)                                                  SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_FLAG_PEND,       RetVal)
-#define  OS_TRACE_MEM_PUT_EXIT(RetVal)                                                    SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_MEM_PUT,         RetVal)
-#define  OS_TRACE_MEM_GET_EXIT(RetVal)                                                    SEGGER_SYSVIEW_RecordEndCallReturnValue (OS_TRACE_ID_MEM_GET,         RetVal)
+#define  OS_TRACE_MUTEX_DEL_EXIT(RetVal)                                                  SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_MUTEX_DEL,       RetVal)
+#define  OS_TRACE_MUTEX_POST_EXIT(RetVal)                                                 SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_MUTEX_POST,      RetVal)
+#define  OS_TRACE_MUTEX_PEND_EXIT(RetVal)                                                 SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_MUTEX_PEND,      RetVal)
+#define  OS_TRACE_TASK_MSG_Q_POST_EXIT(RetVal)                                            SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_TASK_MSG_Q_POST, RetVal)
+#define  OS_TRACE_TASK_MSG_Q_PEND_EXIT(RetVal)                                            SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_TASK_MSG_Q_PEND, RetVal)
+#define  OS_TRACE_TASK_SEM_POST_EXIT(RetVal)                                              SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_TASK_SEM_POST,   RetVal)
+#define  OS_TRACE_TASK_SEM_PEND_EXIT(RetVal)                                              SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_TASK_SEM_PEND,   RetVal)
+#define  OS_TRACE_SEM_DEL_EXIT(RetVal)                                                    SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_SEM_DEL,         RetVal)
+#define  OS_TRACE_SEM_POST_EXIT(RetVal)                                                   SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_SEM_POST,        RetVal)
+#define  OS_TRACE_SEM_PEND_EXIT(RetVal)                                                   SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_SEM_PEND,        RetVal)
+#define  OS_TRACE_Q_DEL_EXIT(RetVal)                                                      SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_Q_DEL,           RetVal)
+#define  OS_TRACE_Q_POST_EXIT(RetVal)                                                     SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_Q_POST,          RetVal)
+#define  OS_TRACE_Q_PEND_EXIT(RetVal)                                                     SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_Q_PEND,          RetVal)
+#define  OS_TRACE_FLAG_DEL_EXIT(RetVal)                                                   SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_FLAG_DEL,        RetVal)
+#define  OS_TRACE_FLAG_POST_EXIT(RetVal)                                                  SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_FLAG_POST,       RetVal)
+#define  OS_TRACE_FLAG_PEND_EXIT(RetVal)                                                  SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_FLAG_PEND,       RetVal)
+#define  OS_TRACE_MEM_PUT_EXIT(RetVal)                                                    SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_MEM_PUT,         RetVal)
+#define  OS_TRACE_MEM_GET_EXIT(RetVal)                                                    SEGGER_SYSVIEW_RecordEndCallU32(OS_TRACE_ID_MEM_GET,         RetVal)
 #else
 #define  OS_TRACE_MUTEX_DEL_EXIT(RetVal)
 #define  OS_TRACE_MUTEX_POST_EXIT(RetVal)
@@ -263,9 +279,9 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 
 /*
-*********************************************************************************************************
-*                           uC/OS-III Trace Unused Macros (other recorders)
-*********************************************************************************************************
+************************************************************************************************************************
+*                                  uC/OS-III Trace Unused Macros (other recorders)
+************************************************************************************************************************
 */
 
 #define  OS_TRACE_MUTEX_DEL(p_mutex)
@@ -309,7 +325,7 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 #define  OS_TRACE_MEM_GET_FAILED(p_mem)
 #define  OS_TRACE_TASK_PRIO_CHANGE(p_tcb, prio)
 
-#else // OS_CFG_TRACE_EN > 0
+#else                                                           /* End of OS_CFG_TRACE_EN > 0                           */
 
 #define  OS_TRACE_TICK_INCREMENT(OSTickCtr)
 
@@ -320,6 +336,7 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 #define  OS_TRACE_TASK_SWITCHED_IN(p_tcb)
 #define  OS_TRACE_TASK_DLY(dly_ticks)
 #define  OS_TRACE_TASK_SUSPEND(p_tcb)
+#define  OS_TRACE_TASK_SUSPENDED(p_tcb)
 #define  OS_TRACE_TASK_RESUME(p_tcb)
 
 #define  OS_TRACE_ISR_BEGIN(isr_id)
@@ -386,24 +403,24 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 #define  OS_TRACE_TASK_PRIO_CHANGE(p_tcb, prio)
 
-#define  OS_TRACE_MUTEX_DEL_ENTER(p_mutex, opt, p_err)
-#define  OS_TRACE_MUTEX_POST_ENTER(p_mutex, opt, p_err)
-#define  OS_TRACE_MUTEX_PEND_ENTER(p_mutex, timeout, opt, p_ts, p_err)
-#define  OS_TRACE_TASK_MSG_Q_POST_ENTER(p_msg_q, p_void, msg_size, opt, p_err)
-#define  OS_TRACE_TASK_MSG_Q_PEND_ENTER(p_msg_q, timeout, opt, p_msg_size, p_ts, p_err)
-#define  OS_TRACE_TASK_SEM_POST_ENTER(p_tcb, opt, p_err)
-#define  OS_TRACE_TASK_SEM_PEND_ENTER(p_tcb, timeout, opt, p_ts, p_err)
-#define  OS_TRACE_SEM_DEL_ENTER(p_sem, opt, p_err)
-#define  OS_TRACE_SEM_POST_ENTER(p_sem, opt, p_err)
-#define  OS_TRACE_SEM_PEND_ENTER(p_sem, timeout, opt, p_ts, p_err)
-#define  OS_TRACE_Q_DEL_ENTER(p_q, opt, p_err)
-#define  OS_TRACE_Q_POST_ENTER(p_q, p_void, msg_size, opt, p_err)
-#define  OS_TRACE_Q_PEND_ENTER(p_q, timeout, opt, p_msg_size, p_ts, p_err)
-#define  OS_TRACE_FLAG_DEL_ENTER(p_grp, opt, p_err)
-#define  OS_TRACE_FLAG_POST_ENTER(p_grp, flags, opt, p_err)
-#define  OS_TRACE_FLAG_PEND_ENTER(p_grp, flags, timeout, opt, p_ts, p_err)
-#define  OS_TRACE_MEM_PUT_ENTER(p_mem, p_blk, p_err)
-#define  OS_TRACE_MEM_GET_ENTER(p_mem, p_err)
+#define  OS_TRACE_MUTEX_DEL_ENTER(p_mutex, opt)
+#define  OS_TRACE_MUTEX_POST_ENTER(p_mutex, opt)
+#define  OS_TRACE_MUTEX_PEND_ENTER(p_mutex, timeout, opt, p_ts)
+#define  OS_TRACE_TASK_MSG_Q_POST_ENTER(p_msg_q, p_void, msg_size, opt)
+#define  OS_TRACE_TASK_MSG_Q_PEND_ENTER(p_msg_q, timeout, opt, p_msg_size, p_ts)
+#define  OS_TRACE_TASK_SEM_POST_ENTER(p_tcb, opt)
+#define  OS_TRACE_TASK_SEM_PEND_ENTER(p_tcb, timeout, opt, p_ts)
+#define  OS_TRACE_SEM_DEL_ENTER(p_sem, opt)
+#define  OS_TRACE_SEM_POST_ENTER(p_sem, opt)
+#define  OS_TRACE_SEM_PEND_ENTER(p_sem, timeout, opt, p_ts)
+#define  OS_TRACE_Q_DEL_ENTER(p_q, opt)
+#define  OS_TRACE_Q_POST_ENTER(p_q, p_void, msg_size, opt)
+#define  OS_TRACE_Q_PEND_ENTER(p_q, timeout, opt, p_msg_size, p_ts)
+#define  OS_TRACE_FLAG_DEL_ENTER(p_grp, opt)
+#define  OS_TRACE_FLAG_POST_ENTER(p_grp, flags, opt)
+#define  OS_TRACE_FLAG_PEND_ENTER(p_grp, flags, timeout, opt, p_ts)
+#define  OS_TRACE_MEM_PUT_ENTER(p_mem, p_blk)
+#define  OS_TRACE_MEM_GET_ENTER(p_mem)
 
 #define  OS_TRACE_MUTEX_DEL_EXIT(RetVal)
 #define  OS_TRACE_MUTEX_POST_EXIT(RetVal)
@@ -428,9 +445,9 @@ Purpose : Interface header for Micrium uC/OS-III and SystemView.
 
 
 /*
-*********************************************************************************************************
-*                                            API Functions
-*********************************************************************************************************
+************************************************************************************************************************
+*                                                   API Functions
+************************************************************************************************************************
 */
 
 #ifdef __cplusplus
