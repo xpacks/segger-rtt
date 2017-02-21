@@ -8,30 +8,11 @@
 *       www.segger.com     Support: support@segger.com               *
 *                                                                    *
 **********************************************************************
-*                                                                    *
-*       embOS * Real time operating system for microcontrollers      *
-*                                                                    *
-*                                                                    *
-*       Please note:                                                 *
-*                                                                    *
-*       Knowledge of this file may under no circumstances            *
-*       be used to write a similar product or a real-time            *
-*       operating system for in-house use.                           *
-*                                                                    *
-*       Thank you for your fairness !                                *
-*                                                                    *
-**********************************************************************
-*                                                                    *
-*       OS version: 3.88g                                            *
-*                                                                    *
-**********************************************************************
 
 --------- END-OF-HEADER --------------------------------------------
 File    : Main_RTT_SpeedTestApp.c
 Purpose : Sample program for measuring RTT performance.
-----------------------------------------------------------------------
 */
-
 
 #include "RTOS.h"
 #include "BSP.h"
