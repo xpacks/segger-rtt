@@ -1,0 +1,14 @@
+.git
+.DS_Store
+Thumbs.db
+.cproject
+.project
+.settings/
+build/
+settings/
+upload.tar.gz
+node_modules/
+build/
+Debug/
+Release/
+test-*/
