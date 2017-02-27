@@ -1,13 +1,9 @@
 .git
 .DS_Store
 Thumbs.db
-.cproject
-.project
-.settings/
-build/
-settings/
-upload.tar.gz
+*.tgz
 node_modules/
+package/
 build/
 Debug/
 Release/
