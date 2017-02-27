@@ -20,9 +20,11 @@
 		"url": "http://liviusdotnet.wordpress.com"
 	},
 	"contributors": [
-		"name": "SEGGER Microcontroller GmbH",
-		"email": "support_jlink@segger.com",
-		"url": "https://www.segger.com/"
+		{
+			"name": "SEGGER Microcontroller GmbH",
+			"email": "support_jlink@segger.com",
+			"url": "https://www.segger.com/"
+		}
 	],
 	"repository": {
 		"type": "git",
