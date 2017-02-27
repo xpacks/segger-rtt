@@ -1,39 +1,39 @@
 {
-	"name": "@ilg/segger-rtt",
-	"version": "2.40.3-1",
-	"description": "An xPack with SEGGER RTT & SystemView source files.",
-	"keywords": [
-		"segger",
-		"rtt",
-		"systemview",
-		"debug",
-		"xpack"
-	],
-	"homepage": "https://github.com/xpacks/segger-rtt",
-	"bugs": {
-		"url": "https://github.com/xpacks/segger-rtt/issues"
-	},
-	"license": "SEE LICENSE IN LICENSE.txt",
-	"author": {
-		"name": "Liviu Ionescu",
-		"email": "ilg@livius.net",
-		"url": "http://liviusdotnet.wordpress.com"
-	},
-	"contributors": [
-		{
-			"name": "SEGGER Microcontroller GmbH",
-			"email": "support_jlink@segger.com",
-			"url": "https://www.segger.com/"
-		}
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/xpacks/segger-rtt.git"
-	},
-	"scripts": {},
-	"config": {},
-	"dependencies": {},
-	"xpack": {
-        "thirdParty": true
-	}
+  "name": "@ilg/segger-rtt",
+  "version": "2.40.3-2",
+  "description": "An xPack with SEGGER RTT & SystemView source files.",
+  "keywords": [
+    "segger",
+    "rtt",
+    "systemview",
+    "debug",
+    "xpack"
+  ],
+  "homepage": "https://github.com/xpacks/segger-rtt",
+  "bugs": {
+    "url": "https://github.com/xpacks/segger-rtt/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "author": {
+    "name": "Liviu Ionescu",
+    "email": "ilg@livius.net",
+    "url": "http://liviusdotnet.wordpress.com"
+  },
+  "contributors": [
+    {
+      "name": "SEGGER Microcontroller GmbH",
+      "email": "support_jlink@segger.com",
+      "url": "https://www.segger.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xpacks/segger-rtt.git"
+  },
+  "scripts": {},
+  "config": {},
+  "dependencies": {},
+  "xpack": {
+    "thirdParty": true
+  }
 }
